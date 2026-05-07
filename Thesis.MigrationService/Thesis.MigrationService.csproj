@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-Thesis.MigrationService-47b9fe07-66e8-4fef-8761-2bb2caa93b98</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.2.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Thesis.Infrastructure\Thesis.Infrastructure.csproj" />
+    </ItemGroup>
+</Project>
