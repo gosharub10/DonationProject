@@ -20,6 +20,13 @@ public class UserRepository(AppDbContext context) : IUserRepository
             .FirstOrDefaultAsync(u => u.Email == email, ct);
     }
 
+    public async Task<IEnumerable<User>> GetAllAsync(CancellationToken ct = default)
+    {
+        return await context.Users
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
     public async Task AddAsync(User user, CancellationToken ct = default)
     {
         await context.AddAsync(user, ct);

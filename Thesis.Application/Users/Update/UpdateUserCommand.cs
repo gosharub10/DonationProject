@@ -1,0 +1,12 @@
+using Thesis.Application.Common;
+using Thesis.Application.DTOs.User;
+using Thesis.Domain.Enums;
+
+namespace Thesis.Application.Users.Update;
+
+public record UpdateUserCommand(
+    Guid Id,
+    string? Name = null,
+    string? Email = null,
+    Role? Role = null
+) : ICommand<UpdateUserResponse>;

@@ -8,15 +8,11 @@
 
     <ItemGroup>
       <Folder Include="DTOs\Project\" />
-      <Folder Include="Mappers\" />
       <Folder Include="Projects\Create\" />
       <Folder Include="Projects\Delete\" />
       <Folder Include="Projects\GetAll\" />
       <Folder Include="Projects\GetById\" />
       <Folder Include="Projects\Update\" />
-      <Folder Include="Users\Delete\" />
-      <Folder Include="Users\Get\" />
-      <Folder Include="Users\Update\" />
     </ItemGroup>
 
     <ItemGroup>
