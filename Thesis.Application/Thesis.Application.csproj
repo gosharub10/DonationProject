@@ -7,10 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="DTOs\Project\" />
       <Folder Include="Projects\Create\" />
       <Folder Include="Projects\Delete\" />
-      <Folder Include="Projects\GetAll\" />
       <Folder Include="Projects\GetById\" />
       <Folder Include="Projects\Update\" />
     </ItemGroup>

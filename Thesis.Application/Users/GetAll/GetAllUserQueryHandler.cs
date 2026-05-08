@@ -21,7 +21,7 @@ public class GetAllUserQueryHandler : IQueryHandler<GetAllUsersQuery, IEnumerabl
             Id: user.Id,
             Name: user.Name,
             Email: user.Email,
-            Role: user.Role,
+            Role: user.Role.ToString(),
             CreatedAt: user.CreatedAt
         )).ToList();
     }

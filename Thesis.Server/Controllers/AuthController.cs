@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Thesis.Application.Common;
 using Thesis.Application.DTOs.User;
-using Thesis.Application.Interfaces;
 using Thesis.Application.Users.Create;
 using Thesis.Application.Users.Login;
-using Thesis.Domain.Entities;
 
 namespace Thesis.Server.Controllers;
 

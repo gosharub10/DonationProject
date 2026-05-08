@@ -6,6 +6,6 @@ public record GetUserResponse(
     Guid Id, 
     string Email, 
     string Name, 
-    Role Role,
+    string Role,
     DateOnly CreatedAt
 );

@@ -17,18 +17,16 @@ public class GetUserByIdQueryHandler : IQueryHandler<GetUserByIdQuery, GetUserRe
     {
         var user = await _userRepository.GetByIdAsync(query.Id, ct);
 
-        // 2. Бизнес-правило: если пользователя нет → доменное исключение
         if (user is null)
         {
             throw new ApplicationException($"User with id {query.Id} not found.");
         }
 
-        // 3. Маппинг Domain → DTO (безопасный вывод данных)
         return new GetUserResponse(
             Id: user.Id,
             Name: user.Name,
             Email: user.Email,
-            Role: user.Role,
+            Role: user.Role.ToString(),
             CreatedAt: user.CreatedAt
         );
     }

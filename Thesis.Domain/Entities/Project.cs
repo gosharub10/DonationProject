@@ -14,7 +14,7 @@ public class Project
     
     private Project() {}
 
-    public Project(Guid id, string title, string description, decimal targetAmount, decimal collectedAmount, DateOnly createdAt, ProjectStatus status = ProjectStatus.Pending)
+    public Project(Guid id, string title, string description, decimal targetAmount, DateOnly createdAt, ProjectStatus status = ProjectStatus.Pending, decimal collectedAmount = 0m)
     {
         Id = id;
         Title = title;
