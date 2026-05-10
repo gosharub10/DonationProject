@@ -1,5 +1,3 @@
-using Thesis.Domain.Enums;
-
 namespace Thesis.Application.DTOs.User;
 
 public record GetUserResponse(

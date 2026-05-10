@@ -30,7 +30,6 @@ public class WalletController : ControllerBase
     {
         try
         {
-            // Использую новую утилиту для безопасного извлечения ID
             var userId = this.GetUserId();
             
             var command = new ConnectWalletCommand(userId, request.WalletAddress);
@@ -53,7 +52,6 @@ public class WalletController : ControllerBase
     {
         try
         {
-            // Использую новую утилиту для безопасного извлечения ID
             var userId = this.GetUserId();
             
             var query = new GetMyWalletQuery(userId);
