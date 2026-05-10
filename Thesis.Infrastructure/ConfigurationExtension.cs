@@ -22,6 +22,7 @@ public static class ConfigurationExtension
         //repos
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<IWalletRepository, WalletRepository>();
         
         //foreign services
         services.AddTransient<IPasswordHasher, PasswordHasher>();

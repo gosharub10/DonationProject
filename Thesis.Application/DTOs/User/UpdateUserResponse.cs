@@ -6,5 +6,5 @@ public record UpdateUserResponse(
     Guid Id,
     string Name,
     string Email,
-    Role Role
+    string Role
 );

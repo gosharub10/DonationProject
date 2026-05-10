@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Thesis.Application.Common;
 using Thesis.Application.DTOs.User;
@@ -27,7 +28,7 @@ public class UserController : ControllerBase
         _updateUserCommandHandler = updateUserCommandHandler;
         _deleteUserCommandHandler = deleteUserCommandHandler;
     }
-
+    
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)
     {
@@ -45,13 +46,14 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserCommand command, CancellationToken ct)
+    public async Task<IActionResult> Update([FromBody] UpdateUserCommand command, CancellationToken ct)
     {
         var result = await _updateUserCommandHandler.HandleAsync(command, ct);
         
         return Ok(result);
     }
 
+    [Authorize(Policy = "AdminOnly")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
     {

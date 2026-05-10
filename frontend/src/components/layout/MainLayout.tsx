@@ -4,19 +4,37 @@ import GuestNavbar from "../navbar/GuestNavbar";
 import UserNavbar from "../navbar/UserNavbar";
 import AdminNavbar from "../navbar/AdminNavbar";
 
-const MainLayout = ({ children }: any) => {
+import type { ReactNode } from "react";
+
+interface Props {
+  children: ReactNode;
+}
+
+const MainLayout = ({ children }: Props) => {
   const { user } = useAuth();
 
+  const renderNavbar = () => {
+    if (!user) return <GuestNavbar />;
+    if (user.role === "Admin") return <AdminNavbar />;
+    return <UserNavbar />;
+  };
+
   return (
-    <>
-      {!user && <GuestNavbar />}
+      <div className="min-h-screen flex flex-col bg-slate-950 text-white">
 
-      {user?.role === "Admin" && <AdminNavbar />}
+        {/* HEADER (всегда сверху) */}
+        <header className="sticky top-0 z-50">
+          {renderNavbar()}
+        </header>
 
-      {user?.role !== "Admin" && user && <UserNavbar />}
+        {/* CONTENT */}
+        <main className="flex-1 flex justify-center pt-10">
+          <div className="w-full max-w-6xl px-4">
+            {children}
+          </div>
+        </main>
 
-      {children}
-    </>
+      </div>
   );
 };
 

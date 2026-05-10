@@ -48,6 +48,14 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .HasColumnName("created_at")
             .HasColumnType("date")
             .IsRequired();
+
+        builder.Property(p => p.WalletAddress)
+            .HasColumnName("wallet_address")
+            .HasMaxLength(255)
+            .IsRequired();
+
+        builder.HasIndex(p => p.WalletAddress)
+            .IsUnique();
         
         builder.HasData(
             new Project(
@@ -55,15 +63,17 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
                 title: "Школьные рюкзаки для детей из детдомов",
                 description: "Сбор средств на покупку школьных принадлежностей, одежды и рюкзаков для 50 детей из региональных детдомов. В комплект входит: рюкзак, канцелярия, форма, спортивная одежда.",
                 targetAmount: 150000m,
+                walletAddress: "0x1234567890abcdef1234567890abcdef12345678",
                 status: ProjectStatus.Active,
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
-            ) , 
+            ),
 
             new Project(
                 id: Guid.Parse("0300b30c-644a-41bb-99b8-e55fbecce271"),
                 title: "Лечение ребёнка с редким заболеванием",
                 description: "Сбор на курс терапии для 5-летнего Артёма, которому требуется дорогостоящее лечение за рубежом. Средства направляются в фонд «Надежда» с полным отчётом о расходах.",
                 targetAmount: 2500000m,
+                walletAddress: "0x2345678901abcdef2345678901abcdef23456789",
                 status: ProjectStatus.Active,
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
             ),
@@ -73,6 +83,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
                 title: "Ремонт игровой комнаты в онкоцентре",
                 description: "Благотворительный проект по созданию уютной игровой зоны для детей, проходящих длительное лечение. Включает: мягкую мебель, развивающие игрушки, книги, мультимедийное оборудование.",
                 targetAmount: 300000m,
+                walletAddress: "0x3456789012abcdef3456789012abcdef34567890",
                 status: ProjectStatus.Completed,
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
             ),
@@ -82,6 +93,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
                 title: "Новогодние подарки для подопечных фондов",
                 description: "Подготовка и вручение новогодних подарков 200 детям из малообеспеченных семей и социальных центров. Каждый подарок включает: сладости, игрушки, тёплые вещи, письмо от Деда Мороза.",
                 targetAmount: 400000m,
+                walletAddress: "0x456789ab0123cdef456789ab0123cdef456789ab",
                 status: ProjectStatus.Pending,
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
             ),
@@ -91,6 +103,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
                 title: "Старый тестовый проект",
                 description: "Проект создан для тестирования функционала отмены и архивации. Не является реальным сбором.",
                 targetAmount: 10000m,
+                walletAddress: "0x56789abc01234def56789abc01234def56789abc",
                 status: ProjectStatus.Canceled,
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
             )

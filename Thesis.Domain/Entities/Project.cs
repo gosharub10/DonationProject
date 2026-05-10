@@ -11,15 +11,17 @@ public class Project
     public decimal CollectedAmount { get; private set; }
     public ProjectStatus Status { get; private set; }
     public DateOnly CreatedAt { get; init; }
+    public string WalletAddress { get; private set; }
     
     private Project() {}
 
-    public Project(Guid id, string title, string description, decimal targetAmount, DateOnly createdAt, ProjectStatus status = ProjectStatus.Pending, decimal collectedAmount = 0m)
+    public Project(Guid id, string title, string description, decimal targetAmount, string walletAddress, DateOnly createdAt, ProjectStatus status = ProjectStatus.Pending, decimal collectedAmount = 0m)
     {
         Id = id;
         Title = title;
         Description = description;
         TargetAmount = targetAmount;
+        WalletAddress = walletAddress;
         CollectedAmount = collectedAmount;
         Status = status;
         CreatedAt = createdAt;
@@ -40,18 +42,34 @@ public class Project
         Status = ProjectStatus.Active;
     }
 
-    private void SetTitle(string title)
+    public void SetTitle(string title)
     {
         Title = title.Trim();
     }
 
-    private void SetDescription(string description)
+    public void SetDescription(string description)
     {
         Description = description.Trim();
     }
 
-    private void SetTargetAmount(decimal amount)
+    public void SetTargetAmount(decimal amount)
     {
         TargetAmount = amount;
+    }
+
+    public void SetStatus(ProjectStatus status)
+    {
+        Status = status;
+    }
+
+    public void SetWalletAddress(string walletAddress)
+    {
+        if (string.IsNullOrWhiteSpace(walletAddress))
+            throw new ArgumentException("Wallet address cannot be empty", nameof(walletAddress));
+
+        if (!walletAddress.StartsWith("0x"))
+            throw new ArgumentException("Wallet address must start with '0x'", nameof(walletAddress));
+
+        WalletAddress = walletAddress;
     }
 }

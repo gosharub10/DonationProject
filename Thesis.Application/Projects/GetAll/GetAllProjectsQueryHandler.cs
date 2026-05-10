@@ -24,7 +24,8 @@ public class GetAllProjectsQueryHandler : IQueryHandler<GetAllProjectsQuery, IEn
             TargetAmount: project.TargetAmount,
             CollectedAmount: project.CollectedAmount,
             Status: project.Status.ToString(),
-            CreatedAt: project.CreatedAt
+            CreatedAt: project.CreatedAt,
+            WalletAddress: project.WalletAddress
         )).ToList();
     }
 }

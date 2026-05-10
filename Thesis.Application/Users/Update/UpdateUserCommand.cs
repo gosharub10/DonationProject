@@ -8,5 +8,5 @@ public record UpdateUserCommand(
     Guid Id,
     string? Name = null,
     string? Email = null,
-    Role? Role = null
+    string? Role = null
 ) : ICommand<UpdateUserResponse>;

@@ -1,5 +1,6 @@
 using Thesis.Application.Common;
 using Thesis.Application.DTOs.User;
+using Thesis.Domain.Enums;
 using Thesis.Domain.Interfaces;
 
 namespace Thesis.Application.Users.Update;
@@ -35,9 +36,12 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, Updat
             }
         }
 
-        if (command.Role != user.Role)
+        if (Enum.TryParse<Role>(command.Role, true, out var role))
         {
-            user.ChangeRole(command.Role.Value); 
+            if (role != user.Role)
+            {
+                user.ChangeRole(role);
+            }
         }
 
         await _userRepository.UpdateAsync(user, ct);
@@ -46,7 +50,7 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, Updat
             Id: user.Id,
             Name: user.Name,
             Email: user.Email,
-            Role: user.Role
+            Role: user.Role.ToString()
         );
     }
 }

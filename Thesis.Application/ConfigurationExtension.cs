@@ -2,13 +2,20 @@
 using Thesis.Application.Common;
 using Thesis.Application.DTOs.Project;
 using Thesis.Application.DTOs.User;
+using Thesis.Application.DTOs.Wallet;
+using Thesis.Application.Projects.Create;
+using Thesis.Application.Projects.Delete;
 using Thesis.Application.Projects.GetAll;
+using Thesis.Application.Projects.GetById;
+using Thesis.Application.Projects.Update;
 using Thesis.Application.Users.Create;
 using Thesis.Application.Users.Delete;
 using Thesis.Application.Users.GetAll;
 using Thesis.Application.Users.GetById;
 using Thesis.Application.Users.Login;
 using Thesis.Application.Users.Update;
+using Thesis.Application.Wallets.Connect;
+using Thesis.Application.Wallets.GetMyWallet;
 
 namespace Thesis.Application;
 
@@ -24,8 +31,16 @@ public static class ConfigurationExtension
         services.AddTransient<IQueryHandler<GetAllUsersQuery, IEnumerable<GetUserResponse>>, GetAllUserQueryHandler>();
         services.AddTransient<IQueryHandler<GetUserByIdQuery, GetUserResponse>, GetUserByIdQueryHandler>();
         
-        //proj
+        //projects
+        services.AddTransient<ICommandHandler<CreateProjectCommand, CreateProjectResponse>, CreateProjectCommandHandler>();
+        services.AddTransient<ICommandHandler<UpdateProjectCommand, UpdateProjectResponse>, UpdateProjectCommandHandler>();
+        services.AddTransient<ICommandHandler<DeleteProjectCommand, Unit>, DeleteProjectCommandHandler>();
         services.AddTransient<IQueryHandler<GetAllProjectsQuery, IEnumerable<GetProjectResponse>>, GetAllProjectsQueryHandler>();
+        services.AddTransient<IQueryHandler<GetProjectByIdQuery, GetProjectResponse>, GetProjectByIdQueryHandler>();
+        
+        //wallets
+        services.AddTransient<ICommandHandler<ConnectWalletCommand, ConnectWalletResponse>, ConnectWalletCommandHandler>();
+        services.AddTransient<IQueryHandler<GetMyWalletQuery, GetWalletResponse>, GetMyWalletQueryHandler>();
         
         return services;
     }

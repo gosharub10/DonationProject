@@ -59,7 +59,16 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnType("character varying(150)")
                         .HasColumnName("title");
 
+                    b.Property<string>("WalletAddress")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("wallet_address");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletAddress")
+                        .IsUnique();
 
                     b.ToTable("projects", (string)null);
 
@@ -72,7 +81,8 @@ namespace Thesis.Infrastructure.Migrations
                             Description = "Сбор средств на покупку школьных принадлежностей, одежды и рюкзаков для 50 детей из региональных детдомов. В комплект входит: рюкзак, канцелярия, форма, спортивная одежда.",
                             Status = "Active",
                             TargetAmount = 150000m,
-                            Title = "Школьные рюкзаки для детей из детдомов"
+                            Title = "Школьные рюкзаки для детей из детдомов",
+                            WalletAddress = "0x1234567890abcdef1234567890abcdef12345678"
                         },
                         new
                         {
@@ -82,7 +92,8 @@ namespace Thesis.Infrastructure.Migrations
                             Description = "Сбор на курс терапии для 5-летнего Артёма, которому требуется дорогостоящее лечение за рубежом. Средства направляются в фонд «Надежда» с полным отчётом о расходах.",
                             Status = "Active",
                             TargetAmount = 2500000m,
-                            Title = "Лечение ребёнка с редким заболеванием"
+                            Title = "Лечение ребёнка с редким заболеванием",
+                            WalletAddress = "0x2345678901abcdef2345678901abcdef23456789"
                         },
                         new
                         {
@@ -92,7 +103,8 @@ namespace Thesis.Infrastructure.Migrations
                             Description = "Благотворительный проект по созданию уютной игровой зоны для детей, проходящих длительное лечение. Включает: мягкую мебель, развивающие игрушки, книги, мультимедийное оборудование.",
                             Status = "Completed",
                             TargetAmount = 300000m,
-                            Title = "Ремонт игровой комнаты в онкоцентре"
+                            Title = "Ремонт игровой комнаты в онкоцентре",
+                            WalletAddress = "0x3456789012abcdef3456789012abcdef34567890"
                         },
                         new
                         {
@@ -102,7 +114,8 @@ namespace Thesis.Infrastructure.Migrations
                             Description = "Подготовка и вручение новогодних подарков 200 детям из малообеспеченных семей и социальных центров. Каждый подарок включает: сладости, игрушки, тёплые вещи, письмо от Деда Мороза.",
                             Status = "Pending",
                             TargetAmount = 400000m,
-                            Title = "Новогодние подарки для подопечных фондов"
+                            Title = "Новогодние подарки для подопечных фондов",
+                            WalletAddress = "0x456789ab0123cdef456789ab0123cdef456789ab"
                         },
                         new
                         {
@@ -112,7 +125,8 @@ namespace Thesis.Infrastructure.Migrations
                             Description = "Проект создан для тестирования функционала отмены и архивации. Не является реальным сбором.",
                             Status = "Canceled",
                             TargetAmount = 10000m,
-                            Title = "Старый тестовый проект"
+                            Title = "Старый тестовый проект",
+                            WalletAddress = "0x56789abc01234def56789abc01234def56789abc"
                         });
                 });
 
@@ -169,6 +183,42 @@ namespace Thesis.Infrastructure.Migrations
                             PasswordHash = "$2a$12$y7rbIj26aVAoJWXwMzmMjO/UPrdn7FnMNCeTLk7.fEYo2Vg2/WlqS",
                             Role = "Admin"
                         });
+                });
+
+            modelBuilder.Entity("Thesis.Domain.Entities.Wallet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("CreatedAt")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("WalletAddress")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.HasIndex("WalletAddress")
+                        .IsUnique();
+
+                    b.ToTable("wallets", (string)null);
+                });
+
+            modelBuilder.Entity("Thesis.Domain.Entities.Wallet", b =>
+                {
+                    b.HasOne("Thesis.Domain.Entities.User", null)
+                        .WithOne()
+                        .HasForeignKey("Thesis.Domain.Entities.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

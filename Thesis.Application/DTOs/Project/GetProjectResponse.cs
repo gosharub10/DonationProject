@@ -9,5 +9,6 @@ public record GetProjectResponse(
     decimal TargetAmount, 
     decimal CollectedAmount, 
     string Status, 
-    DateOnly CreatedAt
+    DateOnly CreatedAt,
+    string WalletAddress
 );
