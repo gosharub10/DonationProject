@@ -1,68 +1,9 @@
-import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { connectWallet, getMyWallet } from "../services/walletService";
-import type { Wallet } from "../models/Wallet";
+import { useWallet } from "../context/WalletContext";
 
 const MetaMaskConnect = () => {
     const { user } = useAuth();
-    const [wallet, setWallet] = useState<Wallet | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [connecting, setConnecting] = useState(false);
-
-    useEffect(() => {
-        if (user) {
-            fetchWallet();
-        }
-    }, [user]);
-
-    const fetchWallet = async () => {
-        try {
-            setLoading(true);
-            const data = await getMyWallet();
-            setWallet(data);
-            setError("");
-        } catch (err: any) {
-            // No wallet yet, that's ok
-            setWallet(null);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const connect = async () => {
-        try {
-            // Check if MetaMask is installed
-            if (!window.ethereum) {
-                setError("MetaMask is not installed. Please install MetaMask extension.");
-                return;
-            }
-
-            setConnecting(true);
-            setError("");
-
-            // Request account access
-            const accounts = await window.ethereum.request({
-                method: "eth_requestAccounts",
-            }) as string[];
-
-            if (!accounts || accounts.length === 0) {
-                setError("No accounts found in MetaMask");
-                return;
-            }
-
-            const walletAddress = accounts[0];
-
-            // Save wallet to backend
-            const data = await connectWallet(walletAddress);
-            setWallet(data);
-            setError("");
-        } catch (err: any) {
-            setError(err?.response?.data?.message || err.message || "Failed to connect wallet");
-        } finally {
-            setConnecting(false);
-        }
-    };
+    const { wallet, loading, error, connecting, connectWallet } = useWallet();
 
     if (!user) {
         return null;
@@ -123,7 +64,7 @@ const MetaMaskConnect = () => {
             )}
 
             <button
-                onClick={connect}
+                onClick={connectWallet}
                 disabled={connecting || !!wallet}
                 className={`
                     w-full py-2 px-4 rounded-xl font-medium transition-all duration-200 text-white

@@ -12,8 +12,8 @@ using Thesis.Infrastructure.Data;
 namespace Thesis.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260508004523_SeedProjects2")]
-    partial class SeedProjects2
+    [Migration("20260511175509_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,6 +46,11 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("PhotoUrls")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("photo_urls");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -62,7 +67,16 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnType("character varying(150)")
                         .HasColumnName("title");
 
+                    b.Property<string>("WalletAddress")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("wallet_address");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletAddress")
+                        .IsUnique();
 
                     b.ToTable("projects", (string)null);
 
@@ -71,51 +85,25 @@ namespace Thesis.Infrastructure.Migrations
                         {
                             Id = new Guid("dd86daa5-3736-4bc3-8558-6e4e6cb142b5"),
                             CollectedAmount = 0m,
-                            CreatedAt = new DateOnly(2026, 4, 8),
-                            Description = "Сбор средств на покупку школьных принадлежностей, одежды и рюкзаков для 50 детей из региональных детдомов. В комплект входит: рюкзак, канцелярия, форма, спортивная одежда.",
+                            CreatedAt = new DateOnly(2026, 5, 10),
+                            Description = "Сбор средств на покупку школьных принадлежностей...",
+                            PhotoUrls = "https://picsum.photos/200?random=117;https://picsum.photos/200?random=13;https://picsum.photos/200?random=17",
                             Status = "Active",
                             TargetAmount = 150000m,
-                            Title = "Школьные рюкзаки для детей из детдомов"
+                            Title = "Школьные рюкзаки для детей из детдомов",
+                            WalletAddress = "0x1234567890abcdef1234567890abcdef12345678"
                         },
                         new
                         {
                             Id = new Guid("0300b30c-644a-41bb-99b8-e55fbecce271"),
                             CollectedAmount = 0m,
-                            CreatedAt = new DateOnly(2026, 5, 1),
-                            Description = "Сбор на курс терапии для 5-летнего Артёма, которому требуется дорогостоящее лечение за рубежом. Средства направляются в фонд «Надежда» с полным отчётом о расходах.",
+                            CreatedAt = new DateOnly(2026, 5, 10),
+                            Description = "Сбор на курс терапии...",
+                            PhotoUrls = "https://picsum.photos/200?random=16;https://picsum.photos/200?random=11;https://picsum.photos/200?random=34",
                             Status = "Active",
                             TargetAmount = 2500000m,
-                            Title = "Лечение ребёнка с редким заболеванием"
-                        },
-                        new
-                        {
-                            Id = new Guid("149dbd7d-3545-430d-a216-90497b8955a6"),
-                            CollectedAmount = 0m,
-                            CreatedAt = new DateOnly(2026, 2, 7),
-                            Description = "Благотворительный проект по созданию уютной игровой зоны для детей, проходящих длительное лечение. Включает: мягкую мебель, развивающие игрушки, книги, мультимедийное оборудование.",
-                            Status = "Completed",
-                            TargetAmount = 300000m,
-                            Title = "Ремонт игровой комнаты в онкоцентре"
-                        },
-                        new
-                        {
-                            Id = new Guid("1f49c201-5c87-470f-b2bf-5dc23b0ff45d"),
-                            CollectedAmount = 0m,
-                            CreatedAt = new DateOnly(2026, 5, 8),
-                            Description = "Подготовка и вручение новогодних подарков 200 детям из малообеспеченных семей и социальных центров. Каждый подарок включает: сладости, игрушки, тёплые вещи, письмо от Деда Мороза.",
-                            Status = "Pending",
-                            TargetAmount = 400000m,
-                            Title = "Новогодние подарки для подопечных фондов"
-                        },
-                        new
-                        {
-                            Id = new Guid("7feb015d-b162-4f93-b944-3a8a4ccbd61c"),
-                            CollectedAmount = 0m,
-                            CreatedAt = new DateOnly(2025, 11, 9),
-                            Description = "Проект создан для тестирования функционала отмены и архивации. Не является реальным сбором.",
-                            Status = "Canceled",
-                            TargetAmount = 10000m,
-                            Title = "Старый тестовый проект"
+                            Title = "Лечение ребёнка с редким заболеванием",
+                            WalletAddress = "0x2345678901abcdef2345678901abcdef23456789"
                         });
                 });
 
@@ -157,7 +145,7 @@ namespace Thesis.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("66d484b7-ccd6-4dbe-9c3a-3649fb9b64cb"),
-                            CreatedAt = new DateOnly(2026, 5, 8),
+                            CreatedAt = new DateOnly(2026, 5, 10),
                             Email = "user@example.com",
                             Name = "Regular User",
                             PasswordHash = "$2a$12$khWKbTxqEJcCiJj4Wfz9ReE27eQQsjQzylH4GYEfq/uz3hRUdvgRi",
@@ -166,12 +154,48 @@ namespace Thesis.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c0df61de-cc12-483b-98a5-0279eaa34d19"),
-                            CreatedAt = new DateOnly(2026, 5, 8),
+                            CreatedAt = new DateOnly(2026, 5, 10),
                             Email = "admin@example.com",
                             Name = "Admin User",
                             PasswordHash = "$2a$12$y7rbIj26aVAoJWXwMzmMjO/UPrdn7FnMNCeTLk7.fEYo2Vg2/WlqS",
                             Role = "Admin"
                         });
+                });
+
+            modelBuilder.Entity("Thesis.Domain.Entities.Wallet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("CreatedAt")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("WalletAddress")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.HasIndex("WalletAddress")
+                        .IsUnique();
+
+                    b.ToTable("wallets", (string)null);
+                });
+
+            modelBuilder.Entity("Thesis.Domain.Entities.Wallet", b =>
+                {
+                    b.HasOne("Thesis.Domain.Entities.User", null)
+                        .WithOne()
+                        .HasForeignKey("Thesis.Domain.Entities.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

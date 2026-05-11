@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Thesis.Domain.Entities;
 using Thesis.Domain.Enums;
@@ -75,7 +74,11 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
                 walletAddress: "0x1234567890abcdef1234567890abcdef12345678",
                 status: ProjectStatus.Active,
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10)),
-                photoUrls: []
+                photoUrls: [
+                    "https://picsum.photos/200?random=117",
+                    "https://picsum.photos/200?random=13",
+                    "https://picsum.photos/200?random=17"
+                ]
             ),
 
             new Project(
@@ -86,7 +89,11 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
                 walletAddress: "0x2345678901abcdef2345678901abcdef23456789",
                 status: ProjectStatus.Active,
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10)),
-                photoUrls: []
+                photoUrls: [
+                    "https://picsum.photos/200?random=16",
+                    "https://picsum.photos/200?random=11",
+                    "https://picsum.photos/200?random=34"
+                ]
             )
         );
     }

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProjectById } from "../services/projService";
+import { useWallet } from "../context/WalletContext";
+import DonationModal from "../components/DonationModal";
 import type { ProjectData } from "../models/ProjectData";
 
 // Placeholder image when no images are available
@@ -14,11 +16,13 @@ const getPlaceholderImage = (projectId: string) => {
 const ProjectDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { wallet } = useWallet();
 
     const [project, setProject] = useState<ProjectData | null>(null);
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState<string[]>([]);
     const [active, setActive] = useState(0);
+    const [showDonationModal, setShowDonationModal] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -147,19 +151,6 @@ const ProjectDetailPage = () => {
                                 {project.description}
                             </p>
                         </div>
-
-                        {/* DONATE CTA */}
-                        <div className="bg-linear-to-r from-blue-600/20 to-purple-600/20 border border-white/10 rounded-2xl p-6">
-                            <h2 className="text-lg mb-2">
-                                Support this project
-                            </h2>
-                            <p className="text-slate-400 text-sm mb-4">
-                                Future crypto donation system will be here.
-                            </p>
-                            <button className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold">
-                                Donate (Coming soon)
-                            </button>
-                        </div>
                     </div>
 
                     {/* RIGHT FLOAT CARD */}
@@ -210,11 +201,36 @@ const ProjectDetailPage = () => {
                                 />
                             </div>
 
+                            {/* Donate Button */}
+                            <button
+                                onClick={() => {
+                                    if (wallet) {
+                                        setShowDonationModal(true);
+                                    }
+                                }}
+                                disabled={!wallet}
+                                className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 ${
+                                    wallet
+                                        ? "bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 active:scale-95"
+                                        : "bg-slate-700 text-slate-400 cursor-not-allowed opacity-50"
+                                }`}
+                            >
+                                {wallet ? "💝 Donate Now" : "Connect Wallet First"}
+                            </button>
                         </div>
                     </div>
 
                 </div>
             </div>
+
+            {/* Donation Modal */}
+            <DonationModal
+                isOpen={showDonationModal}
+                projectId={project.id}
+                projectTitle={project.title}
+                recipientAddress={project.walletAddress}
+                onClose={() => setShowDonationModal(false)}
+            />
         </div>
     );
 };
