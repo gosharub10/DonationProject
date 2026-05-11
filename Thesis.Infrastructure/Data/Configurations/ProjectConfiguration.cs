@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Thesis.Domain.Entities;
 using Thesis.Domain.Enums;
@@ -12,10 +13,11 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.ToTable("projects");
 
         builder.HasKey(p => p.Id);
+
         builder.Property(p => p.Id)
             .HasColumnName("id")
             .HasColumnType("uuid")
-            .ValueGeneratedNever(); 
+            .ValueGeneratedNever();
 
         builder.Property(p => p.Title)
             .HasColumnName("title")
@@ -54,58 +56,37 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .HasMaxLength(255)
             .IsRequired();
 
+        builder.Property(p => p.PhotoUrls)
+            .HasColumnName("photo_urls")
+            .HasConversion(
+                v => string.Join(";", v),
+                v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
+            );
+
         builder.HasIndex(p => p.WalletAddress)
             .IsUnique();
-        
+
         builder.HasData(
             new Project(
                 id: Guid.Parse("dd86daa5-3736-4bc3-8558-6e4e6cb142b5"),
                 title: "Школьные рюкзаки для детей из детдомов",
-                description: "Сбор средств на покупку школьных принадлежностей, одежды и рюкзаков для 50 детей из региональных детдомов. В комплект входит: рюкзак, канцелярия, форма, спортивная одежда.",
+                description: "Сбор средств на покупку школьных принадлежностей...",
                 targetAmount: 150000m,
                 walletAddress: "0x1234567890abcdef1234567890abcdef12345678",
                 status: ProjectStatus.Active,
-                createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
+                createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10)),
+                photoUrls: []
             ),
 
             new Project(
                 id: Guid.Parse("0300b30c-644a-41bb-99b8-e55fbecce271"),
                 title: "Лечение ребёнка с редким заболеванием",
-                description: "Сбор на курс терапии для 5-летнего Артёма, которому требуется дорогостоящее лечение за рубежом. Средства направляются в фонд «Надежда» с полным отчётом о расходах.",
+                description: "Сбор на курс терапии...",
                 targetAmount: 2500000m,
                 walletAddress: "0x2345678901abcdef2345678901abcdef23456789",
                 status: ProjectStatus.Active,
-                createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
-            ),
-
-            new Project(
-                id: Guid.Parse("149dbd7d-3545-430d-a216-90497b8955a6"),
-                title: "Ремонт игровой комнаты в онкоцентре",
-                description: "Благотворительный проект по созданию уютной игровой зоны для детей, проходящих длительное лечение. Включает: мягкую мебель, развивающие игрушки, книги, мультимедийное оборудование.",
-                targetAmount: 300000m,
-                walletAddress: "0x3456789012abcdef3456789012abcdef34567890",
-                status: ProjectStatus.Completed,
-                createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
-            ),
-
-            new Project(
-                id: Guid.Parse("1f49c201-5c87-470f-b2bf-5dc23b0ff45d"),
-                title: "Новогодние подарки для подопечных фондов",
-                description: "Подготовка и вручение новогодних подарков 200 детям из малообеспеченных семей и социальных центров. Каждый подарок включает: сладости, игрушки, тёплые вещи, письмо от Деда Мороза.",
-                targetAmount: 400000m,
-                walletAddress: "0x456789ab0123cdef456789ab0123cdef456789ab",
-                status: ProjectStatus.Pending,
-                createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
-            ),
-
-            new Project(
-                id: Guid.Parse("7feb015d-b162-4f93-b944-3a8a4ccbd61c"),
-                title: "Старый тестовый проект",
-                description: "Проект создан для тестирования функционала отмены и архивации. Не является реальным сбором.",
-                targetAmount: 10000m,
-                walletAddress: "0x56789abc01234def56789abc01234def56789abc",
-                status: ProjectStatus.Canceled,
-                createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10))
+                createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10)),
+                photoUrls: []
             )
         );
     }

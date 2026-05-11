@@ -16,13 +16,32 @@ var db = postgres.AddDatabase(
     )
     .WithCreationScript(createScript);
 
+// Add MinIO for project image storage
+var minioUser = builder.AddParameter("minio-user", "admin");
+
+var minioPassword = builder.AddParameter(
+    "minio-password",
+    "admin123"
+);
+
+var minio = builder.AddMinioContainer(
+        name: "minio",
+        rootUser: minioUser,
+        rootPassword: minioPassword
+    )
+    .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Persistent);
+
+
 var migrationService = builder.AddProject<Projects.Thesis_MigrationService>("migration-service")
     .WithReference(db)
     .WaitFor(db);
 
 var server = builder.AddProject<Projects.Thesis_Server>("server")
     .WithReference(db)
+    .WithReference(minio)
     .WaitFor(db)
+    .WaitFor(minio)
     .WaitForCompletion(migrationService)
     .WithHttpHealthCheck("/health")
     .WithExternalHttpEndpoints();

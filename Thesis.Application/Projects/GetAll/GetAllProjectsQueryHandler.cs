@@ -25,7 +25,8 @@ public class GetAllProjectsQueryHandler : IQueryHandler<GetAllProjectsQuery, IEn
             CollectedAmount: project.CollectedAmount,
             Status: project.Status.ToString(),
             CreatedAt: project.CreatedAt,
-            WalletAddress: project.WalletAddress
+            WalletAddress: project.WalletAddress,
+            PhotoUrls: project.PhotoUrls
         )).ToList();
     }
 }

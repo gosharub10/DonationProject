@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Minio;
 using Npgsql;
 using Thesis.Application.Interfaces;
 using Thesis.Domain.Interfaces;
@@ -11,7 +13,7 @@ namespace Thesis.Infrastructure;
 
 public static class ConfigurationExtension
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {
@@ -24,7 +26,8 @@ public static class ConfigurationExtension
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IWalletRepository, WalletRepository>();
         
-        //foreign services
+        //services
+        services.AddScoped<IImageService, MinioImageService>();
         services.AddTransient<IPasswordHasher, PasswordHasher>();
         services.AddTransient<ITokenService, TokenService>();
         

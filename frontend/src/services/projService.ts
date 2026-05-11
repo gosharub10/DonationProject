@@ -27,3 +27,23 @@ export const deleteProject = async (id: string) => {
     const response = await api.delete(`/projects/${id}`);
     return response.data;
 };
+
+export const uploadProjectImage = async (projectId: string, file: File): Promise<{ imageUrl: string }> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    const response = await api.post(`/projects/${projectId}/images`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+    return response.data;
+};
+
+export const deleteProjectImage = async (projectId: string, imageUrl: string): Promise<void> => {
+    await api.delete(`/projects/${projectId}/images`, {
+        params: {
+            imageUrl,
+        },
+    });
+};

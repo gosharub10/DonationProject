@@ -10,5 +10,6 @@ public record GetProjectResponse(
     decimal CollectedAmount, 
     string Status, 
     DateOnly CreatedAt,
-    string WalletAddress
+    string WalletAddress,
+    ICollection<string> PhotoUrls
 );

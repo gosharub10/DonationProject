@@ -8,5 +8,6 @@ public record UpdateProjectResponse(
     decimal CollectedAmount,
     string Status,
     DateOnly CreatedAt,
-    string WalletAddress
+    string WalletAddress,
+    ICollection<string> PhotoUrls
 );

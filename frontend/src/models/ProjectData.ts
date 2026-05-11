@@ -9,4 +9,5 @@ export interface ProjectData {
     status: ProjectStatus;
     createdAt: string;
     walletAddress: string;
+    photoUrls: string[];
 }

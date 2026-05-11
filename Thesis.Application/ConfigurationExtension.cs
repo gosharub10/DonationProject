@@ -7,6 +7,8 @@ using Thesis.Application.Projects.Create;
 using Thesis.Application.Projects.Delete;
 using Thesis.Application.Projects.GetAll;
 using Thesis.Application.Projects.GetById;
+using Thesis.Application.Projects.Images.Delete;
+using Thesis.Application.Projects.Images.Upload;
 using Thesis.Application.Projects.Update;
 using Thesis.Application.Users.Create;
 using Thesis.Application.Users.Delete;
@@ -37,6 +39,10 @@ public static class ConfigurationExtension
         services.AddTransient<ICommandHandler<DeleteProjectCommand, Unit>, DeleteProjectCommandHandler>();
         services.AddTransient<IQueryHandler<GetAllProjectsQuery, IEnumerable<GetProjectResponse>>, GetAllProjectsQueryHandler>();
         services.AddTransient<IQueryHandler<GetProjectByIdQuery, GetProjectResponse>, GetProjectByIdQueryHandler>();
+        
+        //project images
+        services.AddTransient<ICommandHandler<UploadProjectImageCommand, UploadProjectImageResponse>, UploadProjectImageCommandHandler>();
+        services.AddTransient<ICommandHandler<DeleteProjectImageCommand, Unit>, DeleteProjectImageCommandHandler>();
         
         //wallets
         services.AddTransient<ICommandHandler<ConnectWalletCommand, ConnectWalletResponse>, ConnectWalletCommandHandler>();

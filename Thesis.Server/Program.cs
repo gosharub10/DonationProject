@@ -13,11 +13,12 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
 
 builder.AddNpgsqlDataSource("thesis-db");
+builder.AddMinioClient("minio");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

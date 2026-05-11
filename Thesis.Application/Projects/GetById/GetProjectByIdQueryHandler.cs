@@ -30,7 +30,8 @@ public class GetProjectByIdQueryHandler : IQueryHandler<GetProjectByIdQuery, Get
             CollectedAmount: project.CollectedAmount,
             Status: project.Status.ToString(),
             CreatedAt: project.CreatedAt,
-            WalletAddress: project.WalletAddress
+            WalletAddress: project.WalletAddress,
+            PhotoUrls: project.PhotoUrls
         );
     }
 }

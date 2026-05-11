@@ -8,12 +8,14 @@ import {
 import type { ProjectData } from "../models/ProjectData";
 import type { CreateProjectCommand } from "../models/CreateProjectCommand";
 import type { UpdateProjectCommand } from "../models/UpdateProjectCommand";
+import ImageUploadPanel from "../components/ImageUploadPanel";
 
 const AdminProjectsPage = () => {
     const [projects, setProjects] = useState<ProjectData[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [editProject, setEditProject] = useState<UpdateProjectCommand | null>(null);
+    const [editProjectImages, setEditProjectImages] = useState<string[]>([]);
     const [createMode, setCreateMode] = useState(false);
     const [newProject, setNewProject] = useState<CreateProjectCommand>({
         title: "",
@@ -208,7 +210,7 @@ const AdminProjectsPage = () => {
                             <td className="p-3 flex gap-2">
 
                                 <button
-                                    onClick={() =>
+                                    onClick={() => {
                                         setEditProject({
                                             id: p.id,
                                             title: p.title,
@@ -216,8 +218,9 @@ const AdminProjectsPage = () => {
                                             targetAmount: p.targetAmount,
                                             status: p.status,
                                             walletAddress: p.walletAddress,
-                                        })
-                                    }
+                                        });
+                                        setEditProjectImages(p.photoUrls || []);
+                                    }}
                                     className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
                                 >
                                     Edit
@@ -359,6 +362,12 @@ const AdminProjectsPage = () => {
                             className="w-full p-2 rounded bg-slate-800 border border-slate-700 text-white"
                         />
 
+                        <ImageUploadPanel
+                            projectId={editProject.id}
+                            currentImages={editProjectImages}
+                            onImagesChange={setEditProjectImages}
+                        />
+
                         <div className="flex gap-2">
                             <button
                                 onClick={handleUpdate}
@@ -367,7 +376,10 @@ const AdminProjectsPage = () => {
                                 Save
                             </button>
                             <button
-                                onClick={() => setEditProject(null)}
+                                onClick={() => {
+                                    setEditProject(null);
+                                    setEditProjectImages([]);
+                                }}
                                 className="flex-1 bg-slate-700 hover:bg-slate-600 rounded p-2 transition-colors"
                             >
                                 Cancel

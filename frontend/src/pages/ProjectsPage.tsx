@@ -4,6 +4,14 @@ import { getProjects } from "../services/projService";
 
 import type { ProjectData } from "../models/ProjectData";
 
+// Get placeholder image based on project ID
+const getPlaceholderImage = (projectId: string) => {
+    const colors = ["1e3a8a", "0f766e", "7c3aed", "be123c", "0369a1"];
+    const colorIndex = projectId.charCodeAt(0) % colors.length;
+    const color = colors[colorIndex];
+    return `https://via.placeholder.com/500x300/${color}/ffffff?text=Project+Image`;
+};
+
 const ProjectsPage = () => {
     const [projects, setProjects] = useState<ProjectData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -224,77 +232,97 @@ const ProjectsPage = () => {
                     const progress =
                         (p.collectedAmount / p.targetAmount) * 100;
 
+                    // Get first image or placeholder
+                    const projectImage = p.photoUrls && p.photoUrls.length > 0 
+                        ? p.photoUrls[0] 
+                        : getPlaceholderImage(p.id);
+
                     return (
                         <Link
                             to={`/projects/${p.id}`}
                             key={p.id}
-                            className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col h-full hover:border-blue-600 hover:shadow-blue-600/20 transition-all duration-200 cursor-pointer"
+                            className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col h-full hover:border-blue-600 hover:shadow-blue-600/20 transition-all duration-200 cursor-pointer"
                         >
 
-                            {/* TOP SECTION - TITLE & STATUS */}
-                            <div className="flex justify-between items-start mb-4">
-                                <h2 className="text-xl font-bold flex-1 pr-2">
-                                    {p.title}
-                                </h2>
-                                <span className={`px-3 py-1 text-xs rounded font-medium whitespace-nowrap ${
-                                    p.status === "Active" ? "bg-green-900/30 text-green-400" :
-                                    p.status === "Pending" ? "bg-yellow-900/30 text-yellow-400" :
-                                    p.status === "Completed" ? "bg-blue-900/30 text-blue-400" :
-                                    "bg-red-900/30 text-red-400"
-                                }`}>
-                                    {p.status}
-                                </span>
+                            {/* IMAGE SECTION */}
+                            <div className="relative w-full h-48 overflow-hidden bg-slate-800">
+                                <img
+                                    src={projectImage}
+                                    alt={p.title}
+                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                />
+                                {/* Status badge overlay */}
+                                <div className="absolute top-3 right-3">
+                                    <span className={`px-3 py-1 text-xs rounded font-medium ${
+                                        p.status === "Active" ? "bg-green-900/80 text-green-200" :
+                                        p.status === "Pending" ? "bg-yellow-900/80 text-yellow-200" :
+                                        p.status === "Completed" ? "bg-blue-900/80 text-blue-200" :
+                                        "bg-red-900/80 text-red-200"
+                                    }`}>
+                                        {p.status}
+                                    </span>
+                                </div>
                             </div>
 
-                            {/* DESCRIPTION - GROWS TO FILL SPACE */}
-                            <p className="text-slate-400 text-sm mb-4 wrap-break-word whitespace-normal line-clamp-4 grow">
-                                {p.description}
-                            </p>
+                            {/* CONTENT SECTION */}
+                            <div className="p-5 flex flex-col h-full">
 
-                            {/* BOTTOM SECTION - FIXED TO BOTTOM */}
-                            <div className="mt-auto pt-4 border-t border-slate-700 space-y-3">
+                                {/* TITLE */}
+                                <h2 className="text-xl font-bold mb-3 line-clamp-2">
+                                    {p.title}
+                                </h2>
 
-                                {/* AMOUNTS - 2 COLUMNS */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="text-sm">
-                                        <div className="text-slate-500 text-xs uppercase tracking-wide">
-                                            Target
+                                {/* DESCRIPTION - GROWS TO FILL SPACE */}
+                                <p className="text-slate-400 text-sm mb-4 wrap-break-word whitespace-normal line-clamp-3 grow">
+                                    {p.description}
+                                </p>
+
+                                {/* BOTTOM SECTION - FIXED TO BOTTOM */}
+                                <div className="mt-auto pt-4 border-t border-slate-700 space-y-3">
+
+                                    {/* AMOUNTS - 2 COLUMNS */}
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="text-sm">
+                                            <div className="text-slate-500 text-xs uppercase tracking-wide">
+                                                Target
+                                            </div>
+                                            <div className="text-slate-200 font-semibold text-lg">
+                                                ${p.targetAmount.toLocaleString()}
+                                            </div>
                                         </div>
-                                        <div className="text-slate-200 font-semibold text-lg">
-                                            ${p.targetAmount.toLocaleString()}
+                                        <div className="text-sm">
+                                            <div className="text-slate-500 text-xs uppercase tracking-wide">
+                                                Collected
+                                            </div>
+                                            <div className="text-blue-400 font-semibold text-lg">
+                                                ${p.collectedAmount.toLocaleString()}
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="text-sm">
-                                        <div className="text-slate-500 text-xs uppercase tracking-wide">
-                                            Collected
-                                        </div>
-                                        <div className="text-blue-400 font-semibold text-lg">
-                                            ${p.collectedAmount.toLocaleString()}
-                                        </div>
-                                    </div>
-                                </div>
 
-                                {/* PROGRESS BAR WITH PERCENTAGE */}
-                                <div>
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="text-xs text-slate-400">Progress</span>
-                                        <span className="text-xs font-semibold text-blue-400">
-                                            {Math.min(progress, 100).toFixed(1)}%
-                                        </span>
+                                    {/* PROGRESS BAR WITH PERCENTAGE */}
+                                    <div>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="text-xs text-slate-400">Progress</span>
+                                            <span className="text-xs font-semibold text-blue-400">
+                                                {Math.min(progress, 100).toFixed(1)}%
+                                            </span>
+                                        </div>
+                                        <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                                            <div
+                                                className="bg-linear-to-r from-blue-500 to-blue-400 h-2 rounded-full transition-all duration-300"
+                                                style={{
+                                                    width: `${Math.min(progress, 100)}%`,
+                                                }}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                                        <div
-                                            className="bg-linear-to-r from-blue-500 to-blue-400 h-2 rounded-full transition-all duration-300"
-                                            style={{
-                                                width: `${Math.min(progress, 100)}%`,
-                                            }}
-                                        />
-                                    </div>
-                                </div>
 
-                                {/* DATE */}
-                                <div className="text-xs text-slate-500 pt-2 border-t border-slate-700">
-                                    Created: {new Date(p.createdAt).toLocaleDateString()}
+                                    {/* DATE */}
+                                    <div className="text-xs text-slate-500 pt-2 border-t border-slate-700">
+                                        Created: {new Date(p.createdAt).toLocaleDateString()}
+                                    </div>
+
                                 </div>
 
                             </div>

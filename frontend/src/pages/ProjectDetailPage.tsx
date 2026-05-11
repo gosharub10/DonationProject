@@ -3,14 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getProjectById } from "../services/projService";
 import type { ProjectData } from "../models/ProjectData";
 
-// mock images
-const getMockProjectImages = (id: string) => {
+// Placeholder image when no images are available
+const getPlaceholderImage = (projectId: string) => {
     const colors = ["1e3a8a", "0f766e", "7c3aed", "be123c", "0369a1"];
-
-    return Array.from({ length: 4 }, (_, i) => {
-        const c = colors[i % colors.length];
-        return `https://via.placeholder.com/1400x700/${c}/ffffff?text=Project+${i + 1}`;
-    });
+    const colorIndex = projectId.charCodeAt(0) % colors.length;
+    const color = colors[colorIndex];
+    return `https://via.placeholder.com/1400x700/${color}/ffffff?text=Project+Image`;
 };
 
 const ProjectDetailPage = () => {
@@ -28,7 +26,13 @@ const ProjectDetailPage = () => {
         const load = async () => {
             const data = await getProjectById(id);
             setProject(data);
-            setImages(getMockProjectImages(id));
+            
+            // Use real images from backend, or fallback to placeholder
+            const projectImages = data.photoUrls && data.photoUrls.length > 0 
+                ? data.photoUrls 
+                : [getPlaceholderImage(id)];
+            
+            setImages(projectImages);
             setLoading(false);
         };
 
@@ -74,6 +78,7 @@ const ProjectDetailPage = () => {
 
                     <img
                         src={images[active]}
+                        alt={`${project.title} - image ${active + 1}`}
                         className="w-full h-130 object-cover"
                     />
 
@@ -90,36 +95,42 @@ const ProjectDetailPage = () => {
                         </p>
                     </div>
 
-                    {/* arrows */}
-                    <button
-                        onClick={prev}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 px-3 py-2 rounded-xl"
-                    >
-                        ◀
-                    </button>
+                    {/* arrows - only show if multiple images */}
+                    {images.length > 1 && (
+                        <>
+                            <button
+                                onClick={prev}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 px-3 py-2 rounded-xl transition"
+                            >
+                                ◀
+                            </button>
 
-                    <button
-                        onClick={next}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 px-3 py-2 rounded-xl"
-                    >
-                        ▶
-                    </button>
+                            <button
+                                onClick={next}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 px-3 py-2 rounded-xl transition"
+                            >
+                                ▶
+                            </button>
+                        </>
+                    )}
                 </div>
 
-                {/* DOTS */}
-                <div className="flex justify-center gap-2 mt-4">
-                    {images.map((_, i) => (
-                        <button
-                            key={i}
-                            onClick={() => setActive(i)}
-                            className={`w-2.5 h-2.5 rounded-full transition ${
-                                i === active
-                                    ? "bg-white"
-                                    : "bg-white/30"
-                            }`}
-                        />
-                    ))}
-                </div>
+                {/* DOTS - only show if multiple images */}
+                {images.length > 1 && (
+                    <div className="flex justify-center gap-2 mt-4">
+                        {images.map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setActive(i)}
+                                className={`w-2.5 h-2.5 rounded-full transition ${
+                                    i === active
+                                        ? "bg-white"
+                                        : "bg-white/30 hover:bg-white/50"
+                                }`}
+                            />
+                        ))}
+                    </div>
+                )}
 
                 {/* MAIN GRID */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
