@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getProjectById } from "../services/projService";
 import { useWallet } from "../context/WalletContext";
 import DonationModal from "../components/DonationModal";
+import RecentDonationsBlock from "../components/RecentDonationsBlock";
+import { formatEthAmount } from "../utils/formatUtils";
 import type { ProjectData } from "../models/ProjectData";
 
 // Placeholder image when no images are available
@@ -23,6 +25,7 @@ const ProjectDetailPage = () => {
     const [images, setImages] = useState<string[]>([]);
     const [active, setActive] = useState(0);
     const [showDonationModal, setShowDonationModal] = useState(false);
+    const [refreshPayments, setRefreshPayments] = useState(0);
 
     useEffect(() => {
         if (!id) return;
@@ -43,6 +46,23 @@ const ProjectDetailPage = () => {
         load();
     }, [id]);
 
+    // Refresh project details (used after successful donation)
+    const refreshProjectDetails = async () => {
+        if (!id) return;
+        try {
+            const updatedProject = await getProjectById(id);
+            setProject(updatedProject);
+            setRefreshPayments(prev => prev + 1);
+        } catch (error) {
+            console.error("Failed to refresh project details:", error);
+        }
+    };
+
+    // Handle donation success
+    const handleDonationSuccess = () => {
+        refreshProjectDetails();
+    };
+
     if (loading || !project) {
         return (
             <div className="h-screen flex items-center justify-center text-slate-400">
@@ -51,8 +71,14 @@ const ProjectDetailPage = () => {
         );
     }
 
-    const progress =
-        (project.collectedAmount / project.targetAmount) * 100;
+    const progress = Math.min(
+        (project.collectedAmount / project.targetAmount) * 100,
+        100
+    );
+    const remaining = Math.max(0, project.targetAmount - project.collectedAmount);
+    
+    // Determine project status display
+    const isCompleted = project.status === 'Completed' || progress >= 100;
 
     const next = () =>
         setActive((p) => (p + 1) % images.length);
@@ -151,6 +177,9 @@ const ProjectDetailPage = () => {
                                 {project.description}
                             </p>
                         </div>
+
+                        {/* RECENT DONATIONS */}
+                        <RecentDonationsBlock projectId={project.id} triggerRefresh={refreshPayments} />
                     </div>
 
                     {/* RIGHT FLOAT CARD */}
@@ -161,17 +190,24 @@ const ProjectDetailPage = () => {
                                 <p className="text-slate-400 text-sm">
                                     Funding
                                 </p>
-                                <p className="text-3xl font-bold text-blue-400">
+                                <p className={`text-3xl font-bold transition-colors duration-500 ${
+                                    isCompleted 
+                                        ? 'text-emerald-400' 
+                                        : 'text-blue-400'
+                                }`}>
                                     {progress.toFixed(1)}%
                                 </p>
+                                {isCompleted && (
+                                    <p className="text-xs text-emerald-400 mt-1">✓ Funded</p>
+                                )}
                             </div>
 
                             <div>
                                 <p className="text-slate-400 text-sm">
                                     Raised
                                 </p>
-                                <p className="text-xl">
-                                    ${project.collectedAmount}
+                                <p className="text-xl font-semibold text-white transition-all duration-500">
+                                    {formatEthAmount(project.collectedAmount, 4)}
                                 </p>
                             </div>
 
@@ -179,8 +215,21 @@ const ProjectDetailPage = () => {
                                 <p className="text-slate-400 text-sm">
                                     Goal
                                 </p>
-                                <p className="text-xl">
-                                    ${project.targetAmount}
+                                <p className="text-xl font-semibold text-white transition-all duration-500">
+                                    {formatEthAmount(project.targetAmount, 4)}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className="text-slate-400 text-sm">
+                                    Remaining
+                                </p>
+                                <p className={`text-xl font-semibold transition-all duration-500 ${
+                                    remaining === 0 
+                                        ? 'text-emerald-400' 
+                                        : 'text-amber-400'
+                                }`}>
+                                    {remaining === 0 ? '✓ Goal Reached!' : formatEthAmount(remaining, 4)}
                                 </p>
                             </div>
 
@@ -193,29 +242,39 @@ const ProjectDetailPage = () => {
                                 </p>
                             </div>
 
-                            {/* progress bar */}
+                            {/* progress bar with animation */}
                             <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                                 <div
-                                    className="bg-blue-500 h-full"
-                                    style={{ width: `${progress}%` }}
+                                    className={`bg-linear-to-r h-full transition-all duration-500 ease-out ${
+                                        isCompleted
+                                            ? 'from-emerald-500 to-teal-500'
+                                            : 'from-blue-500 to-purple-500'
+                                    }`}
+                                    style={{ width: `${Math.min(progress, 100)}%` }}
                                 />
                             </div>
 
                             {/* Donate Button */}
                             <button
                                 onClick={() => {
-                                    if (wallet) {
+                                    if (wallet && !isCompleted) {
                                         setShowDonationModal(true);
                                     }
                                 }}
-                                disabled={!wallet}
-                                className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 ${
-                                    wallet
-                                        ? "bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 active:scale-95"
-                                        : "bg-slate-700 text-slate-400 cursor-not-allowed opacity-50"
+                                disabled={!wallet || isCompleted}
+                                className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${
+                                    isCompleted
+                                        ? 'bg-slate-700 text-slate-400 cursor-not-allowed opacity-50'
+                                        : wallet
+                                        ? 'bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 active:scale-95'
+                                        : 'bg-slate-700 text-slate-400 cursor-not-allowed opacity-50'
                                 }`}
                             >
-                                {wallet ? "💝 Donate Now" : "Connect Wallet First"}
+                                {isCompleted 
+                                    ? '✓ Funding Goal Reached' 
+                                    : wallet 
+                                    ? '💝 Donate Now' 
+                                    : 'Connect Wallet First'}
                             </button>
                         </div>
                     </div>
@@ -230,6 +289,7 @@ const ProjectDetailPage = () => {
                 projectTitle={project.title}
                 recipientAddress={project.walletAddress}
                 onClose={() => setShowDonationModal(false)}
+                onSuccess={handleDonationSuccess}
             />
         </div>
     );

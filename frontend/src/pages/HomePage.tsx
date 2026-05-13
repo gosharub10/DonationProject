@@ -1,3 +1,5 @@
+import PublicDonationsDashboard from '../components/PublicDonationsDashboard';
+
 const HomePage = () => {
     return (
         <div className="container page mx-auto">
@@ -45,6 +47,9 @@ const HomePage = () => {
                         </p>
                     </div>
                 </div>
+
+                {/* PUBLIC DONATIONS DASHBOARD */}
+                <PublicDonationsDashboard />
 
                 {/* CTA */}
                 <div className="text-center space-y-4">

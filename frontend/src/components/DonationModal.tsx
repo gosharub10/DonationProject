@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { sendTransaction } from "../services/donationService";
+import { createPayment } from "../services/paymentService";
 import type { TransactionResult } from "../services/donationService";
 
 interface DonationModalProps {
@@ -8,6 +9,7 @@ interface DonationModalProps {
   projectTitle: string;
   recipientAddress: string;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
 const DonationModal = ({
@@ -16,6 +18,7 @@ const DonationModal = ({
   projectTitle,
   recipientAddress,
   onClose,
+  onSuccess,
 }: DonationModalProps) => {
   const [hearts, setHearts] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,6 +52,7 @@ const DonationModal = ({
       setIsLoading(true);
       setError(null);
 
+      // 1. Send MetaMask transaction
       const result = await sendTransaction({
         recipientAddress,
         ethAmount,
@@ -56,7 +60,41 @@ const DonationModal = ({
         projectId,
       });
 
+      // 2. Log to console for debugging (as required)
+      console.log("🎁 Donation Transaction Sent:", {
+        txHash: result.txHash,
+        from: result.from,
+        to: result.to,
+        hearts: result.hearts,
+        ethAmount: result.ethAmount,
+        projectId: result.projectId,
+        createdAt: result.createdAt,
+      });
+
+      // 3. Save payment to backend
+      try {
+        await createPayment({
+          projectId,
+          amount: ethAmount,
+          currency: "ETH",
+          txHash: result.txHash,
+          status: "Pending",
+        });
+        console.log("✓ Payment saved to backend");
+      } catch (backendError: any) {
+        // Backend save failed, but tx was successful
+        // Show warning but keep the success state
+        console.warn("⚠️ Payment save to backend failed:", backendError.message);
+        console.log("ℹ️ Transaction was successful on blockchain, but backend save failed");
+        // Continue with success state anyway
+      }
+
       setSuccessTx(result);
+
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
 
       // Auto-close after 2 seconds on success
       setTimeout(() => {
@@ -66,6 +104,7 @@ const DonationModal = ({
       }, 2000);
     } catch (err: any) {
       setError(err.message || "Failed to send donation");
+      console.error("❌ Donation Error:", err);
     } finally {
       setIsLoading(false);
     }

@@ -30,12 +30,12 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 
         builder.Property(p => p.TargetAmount)
             .HasColumnName("target_amount")
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType("decimal(18,5)")
             .IsRequired();
 
         builder.Property(p => p.CollectedAmount)
             .HasColumnName("collected_amount")
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType("decimal(18,5)")
             .HasDefaultValue(0m)
             .IsRequired();
 
@@ -70,7 +70,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
                 id: Guid.Parse("dd86daa5-3736-4bc3-8558-6e4e6cb142b5"),
                 title: "Школьные рюкзаки для детей из детдомов",
                 description: "Сбор средств на покупку школьных принадлежностей...",
-                targetAmount: 150000m,
+                targetAmount: 1m,
                 walletAddress: "0x1234567890abcdef1234567890abcdef12345678",
                 status: ProjectStatus.Active,
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10)),
@@ -85,7 +85,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
                 id: Guid.Parse("0300b30c-644a-41bb-99b8-e55fbecce271"),
                 title: "Лечение ребёнка с редким заболеванием",
                 description: "Сбор на курс терапии...",
-                targetAmount: 2500000m,
+                targetAmount: 25m,
                 walletAddress: "0x2345678901abcdef2345678901abcdef23456789",
                 status: ProjectStatus.Active,
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10)),

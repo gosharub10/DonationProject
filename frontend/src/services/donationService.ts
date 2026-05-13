@@ -3,6 +3,9 @@
  * Manages network validation, switching, and transaction sending
  */
 
+import api from "../api/axios.ts";
+import type { PublicDonationsSummary } from "../models/Payment.ts";
+
 const SEPOLIA_CHAIN_ID = "11155111"; // Sepolia testnet
 const SEPOLIA_CHAIN_ID_HEX = "0xaa36a7";
 
@@ -257,6 +260,28 @@ export const sendTransaction = async (
     }
 
     console.error("❌ Transaction Error:", errorMessage, error);
+    throw new Error(errorMessage);
+  }
+};
+
+/**
+ * Fetches all public donations across all projects
+ * No authentication required
+ * @param limit - Maximum number of donations to fetch (1-100, default 50)
+ * @returns PublicDonationsSummary with totals and recent donations
+ */
+export const getPublicDonations = async (limit: number = 50): Promise<PublicDonationsSummary> => {
+  try {
+    const response = await api.get("/payments/public", {
+      params: { limit: Math.min(Math.max(limit, 1), 100) }
+    });
+    return response.data;
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.error ||
+      error?.response?.data?.message ||
+      error.message ||
+      "Failed to fetch public donations";
     throw new Error(errorMessage);
   }
 };

@@ -25,11 +25,16 @@ public static class ConfigurationExtension
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IWalletRepository, WalletRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
         
         //services
         services.AddScoped<IImageService, MinioImageService>();
         services.AddTransient<IPasswordHasher, PasswordHasher>();
         services.AddTransient<ITokenService, TokenService>();
+        
+        services.AddSingleton<IBlockchainTransactionService, BlockchainTransactionService>();
+        // Background service for payment status monitoring
+        services.AddHostedService<PaymentStatusBackgroundService>();
         
         return services;
     }

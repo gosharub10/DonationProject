@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Thesis.Infrastructure.Data;
@@ -11,9 +12,11 @@ using Thesis.Infrastructure.Data;
 namespace Thesis.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260512132247_DeleteFieldPayment")]
+    partial class DeleteFieldPayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,12 +34,6 @@ namespace Thesis.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,8)")
                         .HasColumnName("amount");
-
-                    b.Property<int?>("BlockNumber")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ConfirmationCount")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -64,9 +61,6 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("tx_hash");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
@@ -91,7 +85,7 @@ namespace Thesis.Infrastructure.Migrations
 
                     b.Property<decimal>("CollectedAmount")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,5)")
+                        .HasColumnType("decimal(18,2)")
                         .HasDefaultValue(0m)
                         .HasColumnName("collected_amount");
 
@@ -116,7 +110,7 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnName("status");
 
                     b.Property<decimal>("TargetAmount")
-                        .HasColumnType("decimal(18,5)")
+                        .HasColumnType("decimal(18,2)")
                         .HasColumnName("target_amount");
 
                     b.Property<string>("Title")
@@ -147,7 +141,7 @@ namespace Thesis.Infrastructure.Migrations
                             Description = "Сбор средств на покупку школьных принадлежностей...",
                             PhotoUrls = "https://picsum.photos/200?random=117;https://picsum.photos/200?random=13;https://picsum.photos/200?random=17",
                             Status = "Active",
-                            TargetAmount = 1m,
+                            TargetAmount = 150000m,
                             Title = "Школьные рюкзаки для детей из детдомов",
                             WalletAddress = "0x1234567890abcdef1234567890abcdef12345678"
                         },
@@ -159,7 +153,7 @@ namespace Thesis.Infrastructure.Migrations
                             Description = "Сбор на курс терапии...",
                             PhotoUrls = "https://picsum.photos/200?random=16;https://picsum.photos/200?random=11;https://picsum.photos/200?random=34",
                             Status = "Active",
-                            TargetAmount = 25m,
+                            TargetAmount = 2500000m,
                             Title = "Лечение ребёнка с редким заболеванием",
                             WalletAddress = "0x2345678901abcdef2345678901abcdef23456789"
                         });

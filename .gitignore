@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# Локальные конфиги с секретами
+appsettings.json
+appsettings.Development.json
 
 # User-specific files
 *.rsuser

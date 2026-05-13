@@ -92,4 +92,20 @@ public class Project
     {
         PhotoUrls.Clear();
     }
+
+    public void AddDonation(decimal amount)
+    {
+        if (amount <= 0)
+            throw new ArgumentException("Donation amount must be greater than 0", nameof(amount));
+
+        CollectedAmount += amount;
+    }
+
+    public void CheckFundingStatus()
+    {
+        if (CollectedAmount >= TargetAmount && Status != ProjectStatus.Completed)
+        {
+            Status = ProjectStatus.Completed;
+        }
+    }
 }

@@ -3,6 +3,7 @@ using Thesis.Application.Common;
 using Thesis.Application.DTOs.Project;
 using Thesis.Application.DTOs.User;
 using Thesis.Application.DTOs.Wallet;
+using Thesis.Application.DTOs.Payments;
 using Thesis.Application.Projects.Create;
 using Thesis.Application.Projects.Delete;
 using Thesis.Application.Projects.GetAll;
@@ -18,6 +19,10 @@ using Thesis.Application.Users.Login;
 using Thesis.Application.Users.Update;
 using Thesis.Application.Wallets.Connect;
 using Thesis.Application.Wallets.GetMyWallet;
+using Thesis.Application.Payments.Create;
+using Thesis.Application.Payments.GetByProject;
+using Thesis.Application.Payments.GetPublic;
+
 
 namespace Thesis.Application;
 
@@ -47,6 +52,13 @@ public static class ConfigurationExtension
         //wallets
         services.AddTransient<ICommandHandler<ConnectWalletCommand, ConnectWalletResponse>, ConnectWalletCommandHandler>();
         services.AddTransient<IQueryHandler<GetMyWalletQuery, GetWalletResponse>, GetMyWalletQueryHandler>();
+        
+        //payments
+        services.AddTransient<ICommandHandler<CreatePaymentCommand, CreatePaymentResponse>, CreatePaymentCommandHandler>();
+        services.AddTransient<IQueryHandler<GetProjectPaymentsQuery, IEnumerable<PaymentHistoryResponse>>, GetProjectPaymentsQueryHandler>();
+        services.AddTransient<IQueryHandler<GetPublicDonationsQuery, PublicDonationsSummary>, GetPublicDonationsQueryHandler>();
+        
+        services.AddHttpContextAccessor();
         
         return services;
     }

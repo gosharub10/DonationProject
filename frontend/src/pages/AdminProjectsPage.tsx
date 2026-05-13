@@ -189,7 +189,7 @@ const AdminProjectsPage = () => {
                             </td>
 
                             <td className="p-3">
-                                ${p.targetAmount.toLocaleString()}
+                                {p.targetAmount.toLocaleString()} ETH
                             </td>
 
                             <td className="p-3">

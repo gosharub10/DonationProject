@@ -142,7 +142,7 @@ const ProjectsPage = () => {
                         {/* TARGET AMOUNT MIN */}
                         <div>
                             <label className="block text-xs text-slate-400 uppercase tracking-wide mb-2">
-                                Target Min ($)
+                                Target Min (ETH)
                             </label>
                             <input
                                 type="number"
@@ -157,7 +157,7 @@ const ProjectsPage = () => {
                         {/* TARGET AMOUNT MAX */}
                         <div>
                             <label className="block text-xs text-slate-400 uppercase tracking-wide mb-2">
-                                Target Max ($)
+                                Target Max (ETH)
                             </label>
                             <input
                                 type="number"
@@ -172,7 +172,7 @@ const ProjectsPage = () => {
                         {/* COLLECTED AMOUNT MIN */}
                         <div>
                             <label className="block text-xs text-slate-400 uppercase tracking-wide mb-2">
-                                Collected Min ($)
+                                Collected Min (ETH)
                             </label>
                             <input
                                 type="number"
@@ -187,7 +187,7 @@ const ProjectsPage = () => {
                         {/* COLLECTED AMOUNT MAX */}
                         <div>
                             <label className="block text-xs text-slate-400 uppercase tracking-wide mb-2">
-                                Collected Max ($)
+                                Collected Max (ETH)
                             </label>
                             <input
                                 type="number"
@@ -287,7 +287,7 @@ const ProjectsPage = () => {
                                                 Target
                                             </div>
                                             <div className="text-slate-200 font-semibold text-lg">
-                                                ${p.targetAmount.toLocaleString()}
+                                                {p.targetAmount.toLocaleString()} ETH
                                             </div>
                                         </div>
                                         <div className="text-sm">
@@ -295,7 +295,7 @@ const ProjectsPage = () => {
                                                 Collected
                                             </div>
                                             <div className="text-blue-400 font-semibold text-lg">
-                                                ${p.collectedAmount.toLocaleString()}
+                                                {p.collectedAmount.toLocaleString()} ETH
                                             </div>
                                         </div>
                                     </div>
