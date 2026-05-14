@@ -189,6 +189,7 @@ const UsersPage = () => {
                                 >
                                     <option value="User">Пользователь (User)</option>
                                     <option value="Admin">Администратор (Admin)</option>
+                                    <option value="FinanceManager">Финансист (FinanceManager)</option>
                                 </select>
                             </div>
                         </div>

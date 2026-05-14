@@ -46,6 +46,8 @@ const LoginForm = () => {
 
             if (decoded.role === "Admin") {
                 navigate("/admin");
+            } else if (decoded.role === "FinanceManager") {
+                navigate("/finance/dashboard");
             } else {
                 navigate("/");
             }

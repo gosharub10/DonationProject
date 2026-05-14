@@ -9,6 +9,7 @@ using Thesis.Application.Projects.GetById;
 using Thesis.Application.Projects.Images.Delete;
 using Thesis.Application.Projects.Images.Upload;
 using Thesis.Application.Projects.Update;
+using Thesis.Server.Extensions;
 
 namespace Thesis.Server.Controllers;
 
@@ -71,7 +72,14 @@ public class ProjectController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateProjectCommand command, CancellationToken ct)
     {
-        var result = await _updateProjectCommandHandler.HandleAsync(command, ct);
+        // Admins are not allowed to change financial fields (wallet, target)
+        var safeCommand = command;
+        if (this.IsAdmin())
+        {
+            safeCommand = command with { TargetAmount = null, WalletAddress = null };
+        }
+
+        var result = await _updateProjectCommandHandler.HandleAsync(safeCommand, ct);
         
         return Ok(result);
     }

@@ -55,6 +55,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 passwordHash: "$2a$12$y7rbIj26aVAoJWXwMzmMjO/UPrdn7FnMNCeTLk7.fEYo2Vg2/WlqS",
                 createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10)),
                 role: Role.Admin
+            ),
+            new User(
+                id: Guid.Parse("5e4f2a02-7d75-410b-81c8-3c4e31b062fa"),
+                name: "Finance User",
+                email: "fin@example.com",
+                passwordHash: "$2a$12$y7rbIj26aVAoJWXwMzmMjO/UPrdn7FnMNCeTLk7.fEYo2Vg2/WlqS",
+                createdAt: DateOnly.FromDateTime(new DateTime(2026, 5, 10)),
+                role: Role.FinanceManager
             )
         );
     }

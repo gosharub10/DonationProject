@@ -3,5 +3,6 @@ namespace Thesis.Domain.Enums;
 public enum Role
 {
     User,
-    Admin
+    Admin,
+    FinanceManager
 }

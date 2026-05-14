@@ -2,6 +2,7 @@ import {
     BrowserRouter,
     Routes,
     Route,
+    Navigate,
 } from "react-router-dom";
 
 import MainLayout from "../components/layout/MainLayout";
@@ -14,6 +15,10 @@ import ProjectsPage from "../pages/ProjectsPage.tsx";
 import UserPageProfile from "../pages/UserPageProfile.tsx";
 import AdminProjectsPage from "../pages/AdminProjectsPage.tsx";
 import ProjectDetailPage from "../pages/ProjectDetailPage.tsx";
+import FinanceDashboard from "../pages/FinanceDashboard.tsx";
+import FinanceProjectsPage from "../pages/FinanceProjectsPage.tsx";
+import ProjectFinancialSettings from "../pages/ProjectFinancialSettings.tsx";
+import PublicDonations from "../pages/PublicDonations.tsx";
 
 const AppRouter = () => {
     return (
@@ -43,6 +48,11 @@ const AppRouter = () => {
                     <Route 
                         path="/projects/:id"
                         element={<ProjectDetailPage/>}
+                    />
+
+                    <Route
+                        path="/public/donations"
+                        element={<PublicDonations />}
                     />
 
                     <Route
@@ -78,6 +88,42 @@ const AppRouter = () => {
                         element={
                             <ProtectedRoute roles={["Admin"]}>
                                 <AdminProjectsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/finance"
+                        element={
+                            <ProtectedRoute roles={["FinanceManager"]}>
+                                <Navigate to="/finance/dashboard" replace />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/finance/dashboard"
+                        element={
+                            <ProtectedRoute roles={["FinanceManager"]}>
+                                <FinanceDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/finance/projects"
+                        element={
+                            <ProtectedRoute roles={["FinanceManager"]}>
+                                <FinanceProjectsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/finance/projects/:id"
+                        element={
+                            <ProtectedRoute roles={["FinanceManager"]}>
+                                <ProjectFinancialSettings />
                             </ProtectedRoute>
                         }
                     />

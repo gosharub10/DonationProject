@@ -60,6 +60,14 @@ public class PaymentRepository(AppDbContext context) : IPaymentRepository
         await context.SaveChangesAsync(ct);
     }
 
+    public async Task<IEnumerable<Payment>> GetAllPaymentsAsync(CancellationToken ct = default)
+    {
+        return await context.Payments
+            .AsNoTracking()
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync(ct);
+    }
+
     public async Task<List<PublicDonation>> GetAllPublicDonationsAsync(
         int limit,
         CancellationToken ct = default)

@@ -9,6 +9,7 @@ public interface IPaymentRepository
     Task<Payment?> GetByTxHashAsync(string txHash, CancellationToken ct = default);
     Task<IEnumerable<Payment>> GetByProjectIdAsync(Guid projectId, CancellationToken ct = default);
     Task<IEnumerable<Payment>> GetByUserIdAsync(Guid userId, CancellationToken ct = default);
+    Task<IEnumerable<Payment>> GetAllPaymentsAsync(CancellationToken ct = default);
     
     /// <summary>
     /// Gets all payments with pending status for background service processing

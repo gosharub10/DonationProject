@@ -62,8 +62,6 @@ const AdminProjectsPage = () => {
     const [newProject, setNewProject] = useState<CreateProjectCommand>({
         title: "",
         description: "",
-        targetAmount: 0,
-        walletAddress: "",
     });
     const [error, setError] = useState("");
 
@@ -88,20 +86,13 @@ const AdminProjectsPage = () => {
         setNewProject({
             title: "",
             description: "",
-            targetAmount: 0,
-            walletAddress: "",
         });
     };
 
     const handleCreate = async () => {
         try {
-            if (!newProject.title || !newProject.description || newProject.targetAmount <= 0 || !newProject.walletAddress) {
+            if (!newProject.title || !newProject.description) {
                 setError("Заполните все поля корректно");
-                return;
-            }
-
-            if (!newProject.walletAddress.startsWith("0x")) {
-                setError("Адрес кошелька должен начинаться с '0x'");
                 return;
             }
 
@@ -375,30 +366,8 @@ const AdminProjectsPage = () => {
                                 />
                             </div>
 
-                            <div className="grid gap-5 md:grid-cols-2">
-                                <div className="space-y-2">
-                                    <label className="ml-1 text-sm font-bold text-slate-700">Целевая сумма, ETH</label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        step="0.0001"
-                                        placeholder="0.00"
-                                        value={newProject.targetAmount || ""}
-                                        onChange={(e) => setNewProject({ ...newProject, targetAmount: parseFloat(e.target.value) || 0 })}
-                                        className="w-full rounded-2xl border border-brand-beige/60 bg-brand-light/70 px-4 py-4 text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-brand-primary focus:bg-white focus:ring-4 focus:ring-brand-primary/10"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="ml-1 text-sm font-bold text-slate-700">Кошелёк проекта</label>
-                                    <input
-                                        type="text"
-                                        placeholder="0x..."
-                                        value={newProject.walletAddress}
-                                        onChange={(e) => setNewProject({ ...newProject, walletAddress: e.target.value })}
-                                        className="w-full rounded-2xl border border-brand-beige/60 bg-brand-light/70 px-4 py-4 text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-brand-primary focus:bg-white focus:ring-4 focus:ring-brand-primary/10"
-                                    />
-                                </div>
+                            <div className="rounded-2xl border border-brand-beige/60 bg-brand-light/40 px-4 py-4 text-sm font-medium text-slate-500">
+                                Финансовые поля задаются FinanceManager после создания проекта.
                             </div>
                         </div>
 
@@ -466,44 +435,18 @@ const AdminProjectsPage = () => {
                                 />
                             </div>
 
-                            <div className="grid gap-5 md:grid-cols-2">
-                                <div className="space-y-2">
-                                    <label className="ml-1 text-sm font-bold text-slate-700">Целевая сумма, ETH</label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        step="0.0001"
-                                        placeholder="0.00"
-                                        value={editProject.targetAmount || ""}
-                                        onChange={(e) => setEditProject({ ...editProject, targetAmount: parseFloat(e.target.value) || 0 })}
-                                        className="w-full rounded-2xl border border-brand-beige/60 bg-brand-light/70 px-4 py-4 text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-brand-primary focus:bg-white focus:ring-4 focus:ring-brand-primary/10"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="ml-1 text-sm font-bold text-slate-700">Статус</label>
-                                    <select
-                                        value={editProject.status || "Pending"}
-                                        onChange={(e) => setEditProject({ ...editProject, status: e.target.value as ProjectStatus })}
-                                        className="w-full appearance-none rounded-2xl border border-brand-beige/60 bg-brand-light/70 px-4 py-4 text-slate-800 outline-none transition-all focus:border-brand-primary focus:bg-white focus:ring-4 focus:ring-brand-primary/10"
-                                    >
-                                        <option value="Pending">Ожидает</option>
-                                        <option value="Active">Активен</option>
-                                        <option value="Completed">Завершён</option>
-                                        <option value="Canceled">Отменён</option>
-                                    </select>
-                                </div>
-                            </div>
-
                             <div className="space-y-2">
-                                <label className="ml-1 text-sm font-bold text-slate-700">Кошелёк проекта</label>
-                                <input
-                                    type="text"
-                                    placeholder="0x..."
-                                    value={editProject.walletAddress || ""}
-                                    onChange={(e) => setEditProject({ ...editProject, walletAddress: e.target.value })}
-                                    className="w-full rounded-2xl border border-brand-beige/60 bg-brand-light/70 px-4 py-4 text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-brand-primary focus:bg-white focus:ring-4 focus:ring-brand-primary/10"
-                                />
+                                <label className="ml-1 text-sm font-bold text-slate-700">Статус</label>
+                                <select
+                                    value={editProject.status || "Pending"}
+                                    onChange={(e) => setEditProject({ ...editProject, status: e.target.value as ProjectStatus })}
+                                    className="w-full appearance-none rounded-2xl border border-brand-beige/60 bg-brand-light/70 px-4 py-4 text-slate-800 outline-none transition-all focus:border-brand-primary focus:bg-white focus:ring-4 focus:ring-brand-primary/10"
+                                >
+                                    <option value="Pending">Ожидает</option>
+                                    <option value="Active">Активен</option>
+                                    <option value="Completed">Завершён</option>
+                                    <option value="Canceled">Отменён</option>
+                                </select>
                             </div>
 
                             <div className="pt-1">

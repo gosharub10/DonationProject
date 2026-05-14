@@ -16,22 +16,16 @@ public sealed class CreateProjectCommandHandler : ICommandHandler<CreateProjectC
     
     public async Task<CreateProjectResponse> HandleAsync(CreateProjectCommand command, CancellationToken ct)
     {
-        // Validate wallet address format
-        if (string.IsNullOrWhiteSpace(command.WalletAddress))
-            throw new ApplicationException("Wallet address cannot be empty");
-
-        if (!command.WalletAddress.StartsWith("0x"))
-            throw new ApplicationException("Wallet address must start with '0x'");
-
         var projectId = Guid.NewGuid();
         var createdAt = DateOnly.FromDateTime(DateTime.UtcNow);
         
+        // Admin creates project without financial settings; finance manager will complete setup
         var newProject = new Project(
-            projectId, 
-            command.Title, 
-            command.Description, 
-            command.TargetAmount, 
-            command.WalletAddress,
+            projectId,
+            command.Title,
+            command.Description,
+            0m,
+            string.Empty,
             createdAt
         );
 

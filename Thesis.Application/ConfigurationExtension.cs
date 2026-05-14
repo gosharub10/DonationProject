@@ -22,6 +22,11 @@ using Thesis.Application.Wallets.GetMyWallet;
 using Thesis.Application.Payments.Create;
 using Thesis.Application.Payments.GetByProject;
 using Thesis.Application.Payments.GetPublic;
+using Thesis.Application.Projects.Finance.ActivateProject;
+using Thesis.Application.Projects.Finance.Queries.GetFinanceDashboard;
+using Thesis.Application.Projects.Finance.Queries.GetTransactions;
+using Thesis.Application.Projects.Finance.SetProjectTarget;
+using Thesis.Application.Projects.Finance.SetProjectWallet;
 
 
 namespace Thesis.Application;
@@ -57,6 +62,15 @@ public static class ConfigurationExtension
         services.AddTransient<ICommandHandler<CreatePaymentCommand, CreatePaymentResponse>, CreatePaymentCommandHandler>();
         services.AddTransient<IQueryHandler<GetProjectPaymentsQuery, IEnumerable<PaymentHistoryResponse>>, GetProjectPaymentsQueryHandler>();
         services.AddTransient<IQueryHandler<GetPublicDonationsQuery, PublicDonationsSummary>, GetPublicDonationsQueryHandler>();
+        
+        // finance queries
+        services.AddTransient<IQueryHandler<GetFinanceDashboardQuery, FinanceDashboardResponse>, GetFinanceDashboardQueryHandler>();
+        services.AddTransient<IQueryHandler<GetFinanceTransactionsQuery, IEnumerable<Thesis.Application.DTOs.Payments.PaymentHistoryResponse>>, GetFinanceTransactionsQueryHandler>();
+        
+        // finance
+        services.AddTransient<ICommandHandler<SetProjectWalletCommand, Unit>, SetProjectWalletCommandHandler>();
+        services.AddTransient<ICommandHandler<SetProjectTargetAmountCommand, Unit>, SetProjectTargetAmountCommandHandler>();
+        services.AddTransient<ICommandHandler<ActivateProjectCommand, Unit>, ActivateProjectCommandHandler>();
         
         services.AddHttpContextAccessor();
         

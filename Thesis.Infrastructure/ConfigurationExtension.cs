@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Minio;
 using Npgsql;
+using QuestPDF.Infrastructure;
 using Thesis.Application.Interfaces;
 using Thesis.Domain.Interfaces;
 using Thesis.Infrastructure.Data;
@@ -16,6 +16,8 @@ public static class ConfigurationExtension
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        QuestPDF.Settings.License = LicenseType.Community;
+
         services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {
             var dataSource = serviceProvider.GetRequiredService<NpgsqlDataSource>();
@@ -33,11 +35,13 @@ public static class ConfigurationExtension
         services.AddTransient<IPasswordHasher, PasswordHasher>();
         services.AddTransient<ITokenService, TokenService>();
         services.AddScoped<IEmailService, SmtpEmailService>();
+        services.AddScoped<IProjectFinancialReportPdfService, ProjectFinancialReportPdfService>();
         
         // Email configuration
         services.Configure<EmailSettings>(configuration.GetSection("Email"));
         
         services.AddSingleton<IBlockchainTransactionService, BlockchainTransactionService>();
+        services.AddScoped<IBlockchainValidationService, BlockchainValidationService>();
         // Background service for payment status monitoring
         services.AddHostedService<PaymentStatusBackgroundService>();
         

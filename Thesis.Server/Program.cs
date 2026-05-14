@@ -49,6 +49,9 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("UserOnly", policy =>
         policy.RequireRole("User"));
+    
+    options.AddPolicy("FinanceOnly", policy =>
+        policy.RequireRole("FinanceManager"));
 });
 
 var app = builder.Build();
