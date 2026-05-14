@@ -50,58 +50,89 @@ const LoginForm = () => {
                 navigate("/");
             }
 
-        } catch (err: any) {
-            setError(err?.response?.data?.message || "Login error");
+        } catch (err: unknown) {
+            if (err && typeof err === 'object' && 'response' in err) {
+                const responseError = err as { response?: { data?: { message?: string } } };
+                setError(responseError.response?.data?.message || "Ошибка авторизации");
+            } else {
+                setError("Ошибка авторизации");
+            }
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-[80vh] flex items-center justify-center px-6">
-            <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8">
+        <div className="min-h-[80vh] flex items-center justify-center px-4 md:px-6">
+            <div className="w-full max-w-md premium-card p-10 animate-fade-in relative z-10 shadow-2xl">
+                
+                <div className="text-center mb-10">
+                    <h1 className="text-4xl font-black text-slate-800 tracking-tight">
+                        С возвращением
+                    </h1>
+                    <p className="text-slate-500 mt-2 font-medium">Войдите в свой аккаунт, чтобы продолжить</p>
+                </div>
 
-                <h1 className="text-3xl font-bold text-white mb-6">
-                    Login
-                </h1>
+                <form onSubmit={handleSubmit} className="space-y-6">
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={form.email}
+                            onChange={handleChange}
+                            placeholder="Ваш email"
+                            className="w-full p-4 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all shadow-sm placeholder:text-slate-400 font-medium"
+                            required
+                        />
+                    </div>
 
-                    <input
-                        type="email"
-                        name="email"
-                        value={form.email}
-                        onChange={handleChange}
-                        placeholder="Email"
-                        className="w-full p-3 rounded-xl bg-slate-950 border border-slate-700 text-white"
-                        required
-                    />
-
-                    <input
-                        type="password"
-                        name="password"
-                        value={form.password}
-                        onChange={handleChange}
-                        placeholder="Password"
-                        className="w-full p-3 rounded-xl bg-slate-950 border border-slate-700 text-white"
-                        required
-                    />
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Пароль</label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={form.password}
+                            onChange={handleChange}
+                            placeholder="Ваш пароль"
+                            className="w-full p-4 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all shadow-sm placeholder:text-slate-400 font-medium"
+                            required
+                        />
+                    </div>
 
                     {error && (
-                        <div className="text-red-400 text-sm">
-                            {error}
+                        <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 text-sm font-semibold flex items-center gap-2">
+                            <span>⚠</span> {error}
                         </div>
                     )}
 
                     <button
+                        type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl"
+                        className="w-full bg-brand-primary hover:bg-brand-secondary text-white p-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none mt-4 flex items-center justify-center gap-2"
                     >
-                        {loading ? "Loading..." : "Login"}
+                        {loading ? (
+                            <span className="animate-spin inline-block w-5 h-5 border-2 border-white/20 border-t-white rounded-full"></span>
+                        ) : "Войти"}
                     </button>
-
+                    
+                    <div className="text-center mt-6">
+                        <span className="text-slate-500 text-sm font-medium">Нет аккаунта? </span>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/register')}
+                            className="text-brand-primary font-bold hover:text-brand-accent transition-colors text-sm"
+                        >
+                            Зарегистрироваться
+                        </button>
+                    </div>
                 </form>
             </div>
+            
+            {/* Background elements */}
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-brand-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none mix-blend-multiply"></div>
+            <div className="fixed top-20 right-20 w-100 h-100 bg-brand-accent/5 rounded-full blur-[90px] -z-10 pointer-events-none mix-blend-multiply"></div>
         </div>
     );
 };

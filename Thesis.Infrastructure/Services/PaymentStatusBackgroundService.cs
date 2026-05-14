@@ -50,6 +50,8 @@ public class PaymentStatusBackgroundService : BackgroundService
         var payments = scope.ServiceProvider.GetRequiredService<IPaymentRepository>();
         var projects = scope.ServiceProvider.GetRequiredService<IProjectRepository>();
         var blockchain = scope.ServiceProvider.GetRequiredService<IBlockchainTransactionService>();
+        var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
+        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
         var pending = await payments.GetPendingPaymentsAsync(ct);
 
@@ -100,6 +102,7 @@ public class PaymentStatusBackgroundService : BackgroundService
                     continue;
 
                 // 6. FINAL CONFIRMATION
+                var wasConfirmed = p.IsConfirmed;
                 p.MarkAsConfirmed(tx.BlockNumber ?? 0, tx.Confirmations);
                 await payments.UpdateAsync(p, ct);
 
@@ -117,6 +120,38 @@ public class PaymentStatusBackgroundService : BackgroundService
                     "CONFIRMED payment {PaymentId} tx={TxHash}",
                     p.Id,
                     p.TxHash);
+
+                // 7. SEND DONATION RECEIPT EMAIL (only if just confirmed)
+                if (!wasConfirmed && p.IsConfirmed)
+                {
+                    try
+                    {
+                        if (p.UserId.HasValue)
+                        {
+                            var user = await userRepository.GetByIdAsync(p.UserId.Value, ct);
+                            if (user?.Email != null)
+                            {
+                                await emailService.SendDonationReceiptAsync(
+                                    user.Email,
+                                    project?.Title ?? "Unknown Project",
+                                    p.Amount,
+                                    p.Currency,
+                                    p.TxHash,
+                                    p.CreatedAt,
+                                    ct
+                                );
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(
+                            ex,
+                            "Failed to send donation receipt for payment {PaymentId}",
+                            p.Id
+                        );
+                    }
+                }
             }
             catch (Exception ex)
             {

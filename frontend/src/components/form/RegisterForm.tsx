@@ -40,99 +40,110 @@ const RegisterForm = () => {
             await registerUser(form);
 
             navigate("/login");
-        } catch (err: any) {
-            setError(
-                err?.response?.data?.message ||
-                "Registration error"
-            );
+        } catch (err: unknown) {
+            if (err && typeof err === 'object' && 'response' in err) {
+                const responseError = err as { response?: { data?: { message?: string } } };
+                setError(responseError.response?.data?.message || "Ошибка регистрации");
+            } else {
+                setError("Ошибка регистрации");
+            }
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-[80vh] flex items-center justify-center px-6">
-            <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
+        <div className="min-h-[80vh] flex items-center justify-center px-4 md:px-6">
+            <div className="w-full max-w-md premium-card p-10 animate-fade-in relative z-10 shadow-2xl">
 
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-white">
-                        Create account
+                <div className="text-center mb-10">
+                    <h1 className="text-4xl font-black text-slate-800 tracking-tight">
+                        Создать аккаунт
                     </h1>
-
-                    <p className="text-slate-400 mt-2">
-                        Register to continue
-                    </p>
+                    <p className="text-slate-500 mt-2 font-medium">Зарегистрируйтесь, чтобы продолжить</p>
                 </div>
 
                 <form
                     onSubmit={handleSubmit}
-                    className="space-y-5"
+                    className="space-y-6"
                 >
-                    <div>
-                        <label className="block text-sm text-slate-300 mb-2">
-                            Name
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">
+                            Имя
                         </label>
-
                         <input
                             type="text"
                             name="name"
                             value={form.name}
                             onChange={handleChange}
-                            placeholder="Enter your name"
-                            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Ваше имя"
+                            className="w-full p-4 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all shadow-sm placeholder:text-slate-400 font-medium"
                             required
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm text-slate-300 mb-2">
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">
                             Email
                         </label>
-
                         <input
                             type="email"
                             name="email"
                             value={form.email}
                             onChange={handleChange}
-                            placeholder="Enter your email"
-                            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Ваш email"
+                            className="w-full p-4 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all shadow-sm placeholder:text-slate-400 font-medium"
                             required
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm text-slate-300 mb-2">
-                            Password
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">
+                            Пароль
                         </label>
-
                         <input
                             type="password"
                             name="password"
                             value={form.password}
                             onChange={handleChange}
-                            placeholder="Enter your password"
-                            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Придумайте пароль"
+                            className="w-full p-4 rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all shadow-sm placeholder:text-slate-400 font-medium"
                             required
                         />
                     </div>
 
                     {error && (
-                        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl px-4 py-3">
-                            {error}
+                        <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 text-sm font-semibold flex items-center gap-2">
+                            <span>⚠</span> {error}
                         </div>
                     )}
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 transition-colors duration-200 rounded-xl py-3 text-white font-semibold shadow-lg shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-brand-primary hover:bg-brand-secondary text-white p-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none mt-4 flex items-center justify-center gap-2"
                     >
                         {loading
-                            ? "Creating account..."
-                            : "Register"}
+                            ? <span className="animate-spin inline-block w-5 h-5 border-2 border-white/20 border-t-white rounded-full"></span>
+                            : "Зарегистрироваться"}
                     </button>
+                    
+                    <div className="text-center mt-6">
+                        <span className="text-slate-500 text-sm font-medium">Уже есть аккаунт? </span>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/login')}
+                            className="text-brand-primary font-bold hover:text-brand-accent transition-colors text-sm"
+                        >
+                            Войти
+                        </button>
+                    </div>
                 </form>
             </div>
+            
+            {/* Background elements */}
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-brand-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none mix-blend-multiply"></div>
+            <div className="fixed bottom-20 left-20 w-100 h-100 bg-brand-accent/5 rounded-full blur-[90px] -z-10 pointer-events-none mix-blend-multiply"></div>
         </div>
     );
 };

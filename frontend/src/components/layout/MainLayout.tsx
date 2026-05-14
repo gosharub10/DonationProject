@@ -20,16 +20,16 @@ const MainLayout = ({ children }: Props) => {
   };
 
   return (
-      <div className="min-h-screen flex flex-col bg-slate-950 text-white">
+      <div className="min-h-screen flex flex-col bg-brand-light text-slate-800 font-sans">
 
         {/* HEADER (всегда сверху) */}
-        <header className="sticky top-0 z-50">
+        <div className="sticky top-0 z-50 glass border-b-0 pb-0">
           {renderNavbar()}
-        </header>
+        </div>
 
         {/* CONTENT */}
-        <main className="flex-1 flex justify-center pt-10">
-          <div className="w-full max-w-6xl px-4">
+        <main className="flex-1 flex justify-center pt-10 pb-20">
+          <div className="w-full max-w-6xl px-4 animate-fade-in">
             {children}
           </div>
         </main>

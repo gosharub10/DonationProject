@@ -13,7 +13,7 @@ const RecentDonationsBlock = ({ projectId, triggerRefresh = 0 }: RecentDonations
   const [payments, setPayments] = useState<PaymentHistoryResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+  const [autoRefreshEnabled] = useState(true);
 
   // Initial fetch
   useEffect(() => {
@@ -128,14 +128,10 @@ const RecentDonationsBlock = ({ projectId, triggerRefresh = 0 }: RecentDonations
             <div className="relative space-y-3">
               {/* Amount + Status Badge */}
               <div className="flex items-start justify-between gap-2">
-                <p className="text-2xl font-bold text-white">
+                <p className="text-2xl font-bold text-black/90">
                   {formatEthAmount(payment.amount, 4)}
                 </p>
-                <PaymentStatusBadge
-                  status={payment.status}
-                  confirmations={payment.confirmationCount}
-                  requiredConfirmations={12}
-                />
+                <PaymentStatusBadge status={payment.status} />
               </div>
 
               {/* TxHash */}

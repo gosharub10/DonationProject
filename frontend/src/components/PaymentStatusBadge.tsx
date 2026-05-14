@@ -1,50 +1,63 @@
-import type { PaymentStatus } from '../models/Payment';
+import React from 'react';
+import { CheckCircle2, Clock, XCircle, AlertCircle } from 'lucide-react';
 
 interface PaymentStatusBadgeProps {
-  status: PaymentStatus;
-  confirmations?: number;
-  requiredConfirmations?: number;
+  status: string;
+  className?: string;
+  showIcon?: boolean;
 }
 
-/**
- * Badge component showing payment status with color coding
- * pending (yellow) → confirmed (green) → failed (red)
- */
-export const PaymentStatusBadge = ({
-  status,
-  confirmations = 0,
-  requiredConfirmations = 12,
-}: PaymentStatusBadgeProps) => {
-  const getStatusStyles = (status: PaymentStatus) => {
-    switch (status) {
-      case 'confirmed':
-        return 'bg-green-500/20 text-green-200 border border-green-500/30';
+const PaymentStatusBadge: React.FC<PaymentStatusBadgeProps> = ({ 
+  status, 
+  className = "", 
+  showIcon = true 
+}) => {
+  const getStatusConfig = () => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+      case 'success':
+        return { 
+          bg: 'bg-green-50', 
+          text: 'text-green-600', 
+          border: 'border-green-200',
+          icon: <CheckCircle2 size={14} />,
+          label: 'Выполнено' 
+        };
       case 'pending':
-        return 'bg-yellow-500/20 text-yellow-200 border border-yellow-500/30';
+      case 'processing':
+        return { 
+          bg: 'bg-blue-50', 
+          text: 'text-blue-600', 
+          border: 'border-blue-200',
+          icon: <Clock size={14} className="animate-pulse" />,
+          label: 'В обработке' 
+        };
       case 'failed':
-        return 'bg-red-500/20 text-red-200 border border-red-500/30';
-      case 'cancelled':
-        return 'bg-gray-500/20 text-gray-200 border border-gray-500/30';
+      case 'error':
+        return { 
+          bg: 'bg-red-50', 
+          text: 'text-red-600', 
+          border: 'border-red-200',
+          icon: <XCircle size={14} />,
+          label: 'Ошибка' 
+        };
       default:
-        return 'bg-gray-500/20 text-gray-200 border border-gray-500/30';
+        return { 
+          bg: 'bg-slate-50', 
+          text: 'text-slate-600', 
+          border: 'border-slate-200',
+          icon: <AlertCircle size={14} />,
+          label: status ? String(status).charAt(0).toUpperCase() + String(status).slice(1) : 'Неизвестно'
+        };
     }
   };
 
-  const getStatusLabel = (status: PaymentStatus) => {
-    if (status === 'pending' && confirmations > 0) {
-      return `${status} (${confirmations}/${requiredConfirmations})`;
-    }
-    return status.charAt(0).toUpperCase() + status.slice(1);
-  };
+  const config = getStatusConfig();
 
   return (
-    <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold transition-colors ${getStatusStyles(status)}`}
-    >
-      {status === 'confirmed' && <span className="mr-1">✓</span>}
-      {status === 'failed' && <span className="mr-1">✕</span>}
-      {status === 'pending' && <span className="mr-1 animate-spin">⟳</span>}
-      {getStatusLabel(status)}
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${config.bg} ${config.text} ${config.border} ${className}`}>
+      {showIcon && config.icon}
+      {config.label}
     </span>
   );
 };

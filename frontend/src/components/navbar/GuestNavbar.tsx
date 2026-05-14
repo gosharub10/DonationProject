@@ -1,27 +1,33 @@
 import { Link } from "react-router-dom";
+import { HandCoins } from "lucide-react";
 
 const GuestNavbar = () => {
   return (
-      <header className="bg-slate-900 border-b border-slate-800">
+      <header className="w-full">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
-          <h2 className="text-2xl font-bold text-white tracking-wide">
-            LOGO
-          </h2>
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="bg-brand-primary p-2 rounded-xl text-white group-hover:bg-brand-secondary transition-colors">
+              <HandCoins size={24} />
+            </div>
+            <span className="text-xl font-bold text-brand-primary tracking-wide">
+              Сохрани
+            </span>
+          </Link>
 
-          <nav className="flex justify-center items-center gap-6">
+          <nav className="hidden md:flex justify-center items-center gap-8 font-medium">
             <Link
                 to="/"
-                className="text-slate-300 hover:text-blue-400 transition-colors duration-200"
+                className="text-slate-600 hover:text-brand-primary transition-colors duration-200"
             >
-              Home
+              Главная
             </Link>
 
             <Link
                 to="/projects"
-                className="text-slate-300 hover:text-blue-400 transition-colors duration-200"
+                className="text-slate-600 hover:text-brand-primary transition-colors duration-200"
             >
-              Projects
+              Проекты
             </Link>
           </nav>
 
@@ -29,16 +35,16 @@ const GuestNavbar = () => {
           <div className="flex justify-end items-center gap-4">
             <Link
                 to="/login"
-                className="text-slate-300 hover:text-blue-400 transition-colors duration-200"
+                className="text-slate-600 font-medium hover:text-brand-primary transition-colors duration-200"
             >
-              Login
+              Войти
             </Link>
 
             <Link
                 to="/register"
-                className="bg-blue-600 hover:bg-blue-700 transition-colors duration-200 px-4 py-2 rounded-xl text-white font-medium shadow-lg shadow-blue-600/20"
+                className="bg-brand-primary hover:bg-brand-secondary transition-colors duration-300 px-5 py-2.5 rounded-xl text-white font-medium shadow-md hover:shadow-lg"
             >
-              Register
+              Создать аккаунт
             </Link>
           </div>
         </div>

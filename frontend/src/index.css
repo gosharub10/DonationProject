@@ -1,1 +1,43 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #522157;
+  --color-brand-secondary: #8B4C70;
+  --color-brand-accent: #C2649A;
+  --color-brand-beige: #E4C7B7;
+  --color-brand-light: #E4DFD9;
+
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+body {
+  @apply bg-brand-light text-slate-800 antialiased selection:bg-brand-accent selection:text-white transition-colors duration-300;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  @apply bg-white/70 backdrop-blur-md border border-white/30 shadow-sm;
+}
+.glass-dark {
+  @apply bg-brand-primary/95 backdrop-blur-md border border-white/10 shadow-lg text-white;
+}
+
+/* Premium Card utilities */
+.premium-card {
+  @apply bg-white rounded-2xl shadow-sm border border-brand-beige/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+}
+
+/* Progress bar utilities */
+.progress-bar-fill {
+  background: linear-gradient(90deg, var(--color-brand-secondary) 0%, var(--color-brand-accent) 100%);
+}

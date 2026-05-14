@@ -6,7 +6,7 @@
 import api from "../api/axios.ts";
 import type { PublicDonationsSummary } from "../models/Payment.ts";
 
-const SEPOLIA_CHAIN_ID = "11155111"; // Sepolia testnet
+
 const SEPOLIA_CHAIN_ID_HEX = "0xaa36a7";
 
 interface SendTransactionParams {

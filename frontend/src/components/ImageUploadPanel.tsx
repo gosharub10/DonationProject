@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { uploadProjectImage, deleteProjectImage } from "../services/projService";
+import { Upload, Trash2, Image as ImageIcon } from "lucide-react";
 
 interface ImageUploadPanelProps {
     projectId: string;
@@ -15,6 +16,19 @@ const ImageUploadPanel = ({
     const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const getErrorMessage = (error: unknown, fallback: string) => {
+        if (typeof error === "object" && error !== null && "response" in error) {
+            const response = error as { response?: { data?: { message?: string } } };
+            return response.response?.data?.message || fallback;
+        }
+
+        if (error instanceof Error) {
+            return error.message || fallback;
+        }
+
+        return fallback;
+    };
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.currentTarget.files;
@@ -44,8 +58,8 @@ const ImageUploadPanel = ({
                 // Add to images
                 onImagesChange([...currentImages, response.imageUrl]);
             }
-        } catch (err: any) {
-            setError(err.message || "Failed to upload images");
+        } catch (error: unknown) {
+            setError(getErrorMessage(error, "Не удалось загрузить изображения"));
         } finally {
             setIsUploading(false);
             if (fileInputRef.current) {
@@ -55,7 +69,7 @@ const ImageUploadPanel = ({
     };
 
     const handleDeleteImage = async (imageUrl: string) => {
-        if (!window.confirm("Are you sure you want to delete this image?")) {
+        if (!window.confirm("Удалить это изображение?")) {
             return;
         }
 
@@ -66,17 +80,19 @@ const ImageUploadPanel = ({
             // Remove from images
             const updatedImages = currentImages.filter((url) => url !== imageUrl);
             onImagesChange(updatedImages);
-        } catch (err: any) {
-            setError(err?.response?.data?.message || "Failed to delete image");
+        } catch (error: unknown) {
+            setError(getErrorMessage(error, "Не удалось удалить изображение"));
         }
     };
 
     return (
-        <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-4 mt-4">
-            <h3 className="text-white font-semibold mb-4">Project Images</h3>
+        <div className="premium-card mt-4 p-5">
+            <div className="flex items-center gap-2 text-slate-800">
+                <ImageIcon size={18} className="text-brand-primary" />
+                <h3 className="font-bold">Изображения проекта</h3>
+            </div>
 
-            {/* Upload Section */}
-            <div className="mb-6">
+            <div className="mt-4 space-y-3">
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -87,40 +103,42 @@ const ImageUploadPanel = ({
                     className="hidden"
                     id={`file-input-${projectId}`}
                 />
-                <label htmlFor={`file-input-${projectId}`}>
-                    <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={isUploading}
-                        className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {isUploading ? "Uploading..." : "Upload Images"}
-                    </button>
-                </label>
-                <p className="text-slate-400 text-sm mt-2">Max 5 MB per file. Formats: JPG, PNG, WebP</p>
+                <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-primary px-4 py-3 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-brand-secondary hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:bg-brand-primary"
+                >
+                    <Upload size={16} />
+                    {isUploading ? "Загрузка изображений..." : "Загрузить изображения"}
+                </button>
+                <p className="text-sm font-medium text-slate-500">
+                    До 5 МБ на файл. Форматы: JPG, PNG, WebP.
+                </p>
             </div>
 
-            {/* Error Message */}
-            {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
+            {error && <div className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">{error}</div>}
 
-            {/* Images Preview */}
             {currentImages.length > 0 && (
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {currentImages.map((imageUrl, index) => (
                         <div
                             key={index}
-                            className="relative group rounded-lg overflow-hidden border border-slate-700 hover:border-slate-600 transition-all"
+                            className="group relative overflow-hidden rounded-2xl border border-brand-beige/60 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
                         >
                             <img
                                 src={imageUrl}
                                 alt={`Project image ${index + 1}`}
-                                className="w-full h-32 object-cover"
+                                className="h-36 w-full object-cover"
                             />
                             <button
                                 onClick={() => handleDeleteImage(imageUrl)}
-                                className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                className="absolute inset-0 flex items-center justify-center bg-brand-primary/50 opacity-0 backdrop-blur-[1px] transition-opacity group-hover:opacity-100"
                             >
-                                <span className="text-white font-semibold">Delete</span>
+                                <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-brand-primary shadow-sm">
+                                    <Trash2 size={14} />
+                                    Удалить
+                                </span>
                             </button>
                         </div>
                     ))}
@@ -128,7 +146,9 @@ const ImageUploadPanel = ({
             )}
 
             {currentImages.length === 0 && (
-                <div className="text-slate-400 text-center py-8">No images uploaded yet</div>
+                <div className="rounded-2xl border border-dashed border-brand-beige/80 bg-brand-light/40 py-10 text-center text-sm font-medium text-slate-500">
+                    Изображения пока не загружены
+                </div>
             )}
         </div>
     );

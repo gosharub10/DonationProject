@@ -40,8 +40,14 @@ const ProjectsPage = () => {
 
     if (loading) {
         return (
-            <div className="container page">
-                Loading...
+            <div className="w-full">
+                <div className="flex justify-center p-20">
+                  <div className="animate-pulse flex items-center gap-2 text-brand-primary">
+                    <span className="w-3 h-3 bg-brand-primary rounded-full animate-bounce" />
+                    <span className="w-3 h-3 bg-brand-primary rounded-full animate-bounce [animation-delay:0.2s]" />
+                    <span className="w-3 h-3 bg-brand-primary rounded-full animate-bounce [animation-delay:0.4s]" />
+                  </div>
+                </div>
             </div>
         );
     }
@@ -78,71 +84,85 @@ const ProjectsPage = () => {
     });
 
     return (
-        <div className="container page">
+        <div className="w-full">
 
             {/* HEADER */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
 
-                <h1 className="title">
-                    Projects
+                <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+                    Проекты
                 </h1>
 
-                <div className="text-slate-300 bg-slate-800 px-4 py-2 rounded-xl">
-                    Showing: {filteredProjects.length} / {projects.length}
+                <div className="text-slate-600 bg-white border border-brand-beige/50 px-4 py-2 rounded-full font-medium shadow-sm text-sm">
+                    Показано: {filteredProjects.length} / {projects.length}
                 </div>
 
             </div>
 
             {/* SEARCH */}
-            <div className="mb-6">
+            <div className="mb-6 flex gap-3">
                 <input
                     type="text"
-                    placeholder="Search project by title..."
+                    placeholder="Поиск по названию..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full p-3 rounded-xl bg-slate-900 border border-slate-700 text-white mb-3"
+                    className="w-full p-4 rounded-xl bg-white border border-brand-beige text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all shadow-sm"
                 />
 
                 {/* FILTERS TOGGLE BUTTON */}
                 <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm text-slate-300 transition-colors"
+                    className="px-6 py-4 bg-white border border-brand-beige hover:border-brand-primary hover:text-brand-primary rounded-xl text-slate-600 font-medium transition-all shadow-sm whitespace-nowrap"
                 >
-                    {showFilters ? "▼ Hide Filters" : "▶ Show Filters"}
+                    {showFilters ? "Скрыть фильтры" : "Фильтры"}
                 </button>
             </div>
 
             {/* FILTERS PANEL */}
             {showFilters && (
-                <div className="mb-6 p-6 bg-slate-900 border border-slate-800 rounded-2xl">
-                    <h3 className="text-lg font-semibold text-slate-300 mb-6 uppercase tracking-wide">
-                        Filters
-                    </h3>
+                <div className="mb-8 p-8 bg-white border border-brand-beige rounded-2xl shadow-sm animate-fade-in">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-lg font-bold text-slate-900">
+                            Фильтрация
+                        </h3>
+                        <button
+                            onClick={() => {
+                                setStatusFilter("");
+                                setTargetMinFilter("");
+                                setTargetMaxFilter("");
+                                setCollectedMinFilter("");
+                                setCollectedMaxFilter("");
+                            }}
+                            className="text-sm text-brand-secondary hover:text-brand-accent font-medium transition-colors"
+                        >
+                            Сбросить
+                        </button>
+                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
 
                         {/* STATUS FILTER */}
                         <div>
-                            <label className="block text-xs text-slate-400 uppercase tracking-wide mb-2">
-                                Status
+                            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                                Статус
                             </label>
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm"
+                                className="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
                             >
-                                <option value="">All Statuses</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Active">Active</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Canceled">Canceled</option>
+                                <option value="">Все статусы</option>
+                                <option value="Pending">В ожидании</option>
+                                <option value="Active">Активные</option>
+                                <option value="Completed">Завершенные</option>
+                                <option value="Canceled">Отмененные</option>
                             </select>
                         </div>
 
                         {/* TARGET AMOUNT MIN */}
                         <div>
-                            <label className="block text-xs text-slate-400 uppercase tracking-wide mb-2">
-                                Target Min (ETH)
+                            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                                Цель от (ETH)
                             </label>
                             <input
                                 type="number"
@@ -150,14 +170,14 @@ const ProjectsPage = () => {
                                 placeholder="0"
                                 value={targetMinFilter}
                                 onChange={(e) => setTargetMinFilter(e.target.value === "" ? "" : parseFloat(e.target.value))}
-                                className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm"
+                                className="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
                             />
                         </div>
 
                         {/* TARGET AMOUNT MAX */}
                         <div>
-                            <label className="block text-xs text-slate-400 uppercase tracking-wide mb-2">
-                                Target Max (ETH)
+                            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                                Цель до (ETH)
                             </label>
                             <input
                                 type="number"
@@ -165,14 +185,14 @@ const ProjectsPage = () => {
                                 placeholder="∞"
                                 value={targetMaxFilter}
                                 onChange={(e) => setTargetMaxFilter(e.target.value === "" ? "" : parseFloat(e.target.value))}
-                                className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm"
+                                className="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
                             />
                         </div>
 
                         {/* COLLECTED AMOUNT MIN */}
                         <div>
-                            <label className="block text-xs text-slate-400 uppercase tracking-wide mb-2">
-                                Collected Min (ETH)
+                            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                                Собрано от (ETH)
                             </label>
                             <input
                                 type="number"
@@ -180,14 +200,14 @@ const ProjectsPage = () => {
                                 placeholder="0"
                                 value={collectedMinFilter}
                                 onChange={(e) => setCollectedMinFilter(e.target.value === "" ? "" : parseFloat(e.target.value))}
-                                className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm"
+                                className="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
                             />
                         </div>
 
                         {/* COLLECTED AMOUNT MAX */}
                         <div>
-                            <label className="block text-xs text-slate-400 uppercase tracking-wide mb-2">
-                                Collected Max (ETH)
+                            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                                Собрано до (ETH)
                             </label>
                             <input
                                 type="number"
@@ -195,33 +215,25 @@ const ProjectsPage = () => {
                                 placeholder="∞"
                                 value={collectedMaxFilter}
                                 onChange={(e) => setCollectedMaxFilter(e.target.value === "" ? "" : parseFloat(e.target.value))}
-                                className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm"
+                                className="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
                             />
                         </div>
 
                     </div>
-
-                    {/* RESET FILTERS BUTTON */}
-                    <button
-                        onClick={() => {
-                            setStatusFilter("");
-                            setTargetMinFilter("");
-                            setTargetMaxFilter("");
-                            setCollectedMinFilter("");
-                            setCollectedMaxFilter("");
-                        }}
-                        className="mt-4 px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm text-slate-300 transition-colors"
-                    >
-                        Reset Filters
-                    </button>
                 </div>
             )}
 
             {/* GRID */}
             {filteredProjects.length === 0 ? (
-                <div className="text-center py-12">
-                    <p className="text-slate-400 text-lg">
-                        No projects found matching your filters
+                <div className="text-center py-20 premium-card bg-white">
+                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </div>
+                    <p className="text-slate-900 font-bold text-lg mb-1">
+                        Проекты не найдены
+                    </p>
+                    <p className="text-slate-500 text-sm">
+                        Попробуйте изменить параметры фильтрации
                     </p>
                 </div>
             ) : (
@@ -241,90 +253,77 @@ const ProjectsPage = () => {
                         <Link
                             to={`/projects/${p.id}`}
                             key={p.id}
-                            className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col h-full hover:border-blue-600 hover:shadow-blue-600/20 transition-all duration-200 cursor-pointer"
+                            className="premium-card group overflow-hidden flex flex-col h-full cursor-pointer"
                         >
 
                             {/* IMAGE SECTION */}
-                            <div className="relative w-full h-48 overflow-hidden bg-slate-800">
+                            <div className="relative w-full h-52 overflow-hidden bg-slate-100">
                                 <img
                                     src={projectImage}
                                     alt={p.title}
-                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                                 {/* Status badge overlay */}
-                                <div className="absolute top-3 right-3">
-                                    <span className={`px-3 py-1 text-xs rounded font-medium ${
-                                        p.status === "Active" ? "bg-green-900/80 text-green-200" :
-                                        p.status === "Pending" ? "bg-yellow-900/80 text-yellow-200" :
-                                        p.status === "Completed" ? "bg-blue-900/80 text-blue-200" :
-                                        "bg-red-900/80 text-red-200"
+                                <div className="absolute top-4 right-4">
+                                    <span className={`px-3 py-1.5 text-[10px] uppercase tracking-wider font-bold rounded-full shadow-sm ${
+                                        p.status === "Active" ? "bg-green-100 text-green-700" :
+                                        p.status === "Pending" ? "bg-amber-100 text-amber-700" :
+                                        p.status === "Completed" ? "bg-brand-primary text-white" :
+                                        "bg-red-100 text-red-700"
                                     }`}>
-                                        {p.status}
+                                        {p.status === "Pending" ? "В ожидании" :
+                                         p.status === "Active" ? "Активен" :
+                                         p.status === "Completed" ? "Завершен" : "Отменен"}
                                     </span>
                                 </div>
                             </div>
 
                             {/* CONTENT SECTION */}
-                            <div className="p-5 flex flex-col h-full">
+                            <div className="p-6 flex flex-col flex-1">
 
                                 {/* TITLE */}
-                                <h2 className="text-xl font-bold mb-3 line-clamp-2">
+                                <h2 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-brand-primary transition-colors">
                                     {p.title}
                                 </h2>
 
                                 {/* DESCRIPTION - GROWS TO FILL SPACE */}
-                                <p className="text-slate-400 text-sm mb-4 wrap-break-word whitespace-normal line-clamp-3 grow">
+                                <p className="text-slate-600 text-sm mb-6 wrap-break-word whitespace-normal line-clamp-3 flex-1">
                                     {p.description}
                                 </p>
 
                                 {/* BOTTOM SECTION - FIXED TO BOTTOM */}
-                                <div className="mt-auto pt-4 border-t border-slate-700 space-y-3">
-
-                                    {/* AMOUNTS - 2 COLUMNS */}
-                                    <div className="grid grid-cols-2 gap-3">
+                                <div className="mt-auto space-y-4">
+                                    <div className="flex justify-between items-end mb-2">
                                         <div className="text-sm">
-                                            <div className="text-slate-500 text-xs uppercase tracking-wide">
-                                                Target
+                                            <div className="text-slate-500 text-xs font-semibold uppercase tracking-wide">
+                                                Собрано (ETH)
                                             </div>
-                                            <div className="text-slate-200 font-semibold text-lg">
-                                                {p.targetAmount.toLocaleString()} ETH
+                                            <div className="text-brand-primary font-black text-lg">
+                                                {p.collectedAmount.toLocaleString()} / {p.targetAmount.toLocaleString()}
                                             </div>
                                         </div>
-                                        <div className="text-sm">
-                                            <div className="text-slate-500 text-xs uppercase tracking-wide">
-                                                Collected
-                                            </div>
-                                            <div className="text-blue-400 font-semibold text-lg">
-                                                {p.collectedAmount.toLocaleString()} ETH
-                                            </div>
+                                        <div className="text-sm font-bold text-brand-secondary">
+                                            {Math.min(progress, 100).toFixed(1)}%
                                         </div>
                                     </div>
 
-                                    {/* PROGRESS BAR WITH PERCENTAGE */}
-                                    <div>
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="text-xs text-slate-400">Progress</span>
-                                            <span className="text-xs font-semibold text-blue-400">
-                                                {Math.min(progress, 100).toFixed(1)}%
-                                            </span>
-                                        </div>
-                                        <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                                            <div
-                                                className="bg-linear-to-r from-blue-500 to-blue-400 h-2 rounded-full transition-all duration-300"
-                                                style={{
-                                                    width: `${Math.min(progress, 100)}%`,
-                                                }}
-                                            />
-                                        </div>
+                                    {/* PROGRESS BAR */}
+                                    <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                        <div
+                                            className="progress-bar-fill h-full rounded-full transition-all duration-1000 ease-out"
+                                            style={{
+                                                width: `${Math.min(progress, 100)}%`,
+                                            }}
+                                        />
                                     </div>
 
-                                    {/* DATE */}
-                                    <div className="text-xs text-slate-500 pt-2 border-t border-slate-700">
-                                        Created: {new Date(p.createdAt).toLocaleDateString()}
+                                    <div className="flex justify-between items-center text-xs text-slate-400 font-medium pt-3 mt-4 border-t border-slate-100">
+                                        <span>Создан {new Date(p.createdAt).toLocaleDateString()}</span>
+                                        <span className="text-brand-primary group-hover:text-brand-accent transition-colors flex items-center gap-1">
+                                            Подробнее <span>→</span>
+                                        </span>
                                     </div>
-
                                 </div>
-
                             </div>
 
                         </Link>

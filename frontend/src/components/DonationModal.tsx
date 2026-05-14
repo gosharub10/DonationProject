@@ -2,6 +2,7 @@ import { useState } from "react";
 import { sendTransaction } from "../services/donationService";
 import { createPayment } from "../services/paymentService";
 import type { TransactionResult } from "../services/donationService";
+import { Heart, X, ExternalLink, CheckCircle2, Lock, Activity, Wallet, Info } from "lucide-react";
 
 interface DonationModalProps {
   isOpen: boolean;
@@ -36,13 +37,13 @@ const DonationModal = ({
 
   // Handle heart increment
   const handleIncreaseHearts = () => {
-    setHearts((prev) => Math.min(prev + 1, 1000));
+    if (hearts < 1000) setHearts((prev) => prev + 1);
     setError(null);
   };
 
   // Handle heart decrement
   const handleDecreaseHearts = () => {
-    setHearts((prev) => Math.max(prev - 1, 1));
+    if (hearts > 1) setHearts((prev) => prev - 1);
     setError(null);
   };
 
@@ -60,18 +61,7 @@ const DonationModal = ({
         projectId,
       });
 
-      // 2. Log to console for debugging (as required)
-      console.log("🎁 Donation Transaction Sent:", {
-        txHash: result.txHash,
-        from: result.from,
-        to: result.to,
-        hearts: result.hearts,
-        ethAmount: result.ethAmount,
-        projectId: result.projectId,
-        createdAt: result.createdAt,
-      });
-
-      // 3. Save payment to backend
+      // 2. Save payment to backend
       try {
         await createPayment({
           projectId,
@@ -80,43 +70,31 @@ const DonationModal = ({
           txHash: result.txHash,
           status: "Pending",
         });
-        console.log("✓ Payment saved to backend");
       } catch (backendError: any) {
-        // Backend save failed, but tx was successful
-        // Show warning but keep the success state
         console.warn("⚠️ Payment save to backend failed:", backendError.message);
-        console.log("ℹ️ Transaction was successful on blockchain, but backend save failed");
-        // Continue with success state anyway
       }
 
       setSuccessTx(result);
 
-      // Call onSuccess callback if provided
       if (onSuccess) {
         onSuccess();
       }
 
-      // Auto-close after 2 seconds on success
-      setTimeout(() => {
-        onClose();
-        setHearts(1);
-        setSuccessTx(null);
-      }, 2000);
     } catch (err: any) {
-      setError(err.message || "Failed to send donation");
-      console.error("❌ Donation Error:", err);
+      setError(err.message || "Ошибка при отправке. Проверьте MetaMask.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle modal close
   const handleClose = () => {
     if (!isLoading) {
       onClose();
-      setHearts(1);
-      setError(null);
-      setSuccessTx(null);
+      setTimeout(() => {
+          setHearts(1);
+          setError(null);
+          setSuccessTx(null);
+      }, 300);
     }
   };
 
@@ -124,7 +102,7 @@ const DonationModal = ({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-200"
+        className={`fixed inset-0 bg-slate-900/40 backdrop-blur-md z-40 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={handleClose}
       />
 
@@ -134,167 +112,151 @@ const DonationModal = ({
           isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
         }`}
       >
-        <div className="bg-slate-900/95 border border-white/10 backdrop-blur-xl rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden border border-brand-beige relative">
+          
           {/* Header */}
-          <div className="bg-linear-to-r from-blue-600/20 to-purple-600/20 border-b border-white/10 p-6 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-white">Send Donation</h2>
+          <div className="bg-slate-50 border-b border-brand-beige/50 p-5 flex items-center justify-between relative overflow-hidden">
+            <h2 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2 relative z-10">
+                <Wallet className="text-brand-primary" size={24} /> 
+                Поддержать Проект
+            </h2>
             <button
               onClick={handleClose}
               disabled={isLoading}
-              className="text-slate-400 hover:text-white transition-colors disabled:opacity-50"
+              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded-xl transition-all disabled:opacity-50 relative z-10"
             >
-              ✕
+              <X size={20} />
             </button>
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-brand-primary/5 rounded-full blur-2xl"></div>
           </div>
 
           {/* Success State */}
           {successTx && (
-            <div className="p-6 space-y-4">
-              <div className="text-center space-y-4">
-                <div className="text-4xl animate-bounce">✓</div>
-                <div>
-                  <h3 className="text-lg font-semibold text-green-400">
-                    Donation Sent!
-                  </h3>
-                  <p className="text-sm text-slate-300 mt-2">
-                    Transaction hash:{" "}
-                    <span className="font-mono text-xs text-slate-400 break-all">
-                      {successTx.txHash.slice(0, 10)}...{successTx.txHash.slice(-4)}
+            <div className="p-8 pb-10 flex flex-col items-center">
+                <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-6 animate-bounce shadow-lg shadow-green-100">
+                    <CheckCircle2 size={40} />
+                </div>
+                
+                <h3 className="text-2xl font-black text-slate-800 mb-2">Успешно!</h3>
+                <p className="text-slate-500 text-center mb-6 max-w-xs leading-relaxed">
+                    Транзакция отправлена в блокчейн. Спасибо за вашу поддержку.
+                </p>
+                
+                <div className="w-full bg-slate-50 p-4 rounded-2xl mb-8 flex justify-between items-center border border-slate-100">
+                    <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Hash</span>
+                    <span className="font-mono text-slate-700 text-sm font-semibold">
+                      {successTx.txHash.slice(0, 8)}...{successTx.txHash.slice(-6)}
                     </span>
-                  </p>
                 </div>
 
-                {/* Etherscan Button */}
-                <a
-                  href={`https://sepolia.etherscan.io/tx/${successTx.txHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-green-600/20 hover:bg-green-600/40 border border-green-500/30 hover:border-green-500/50 text-green-400 text-sm font-medium transition-all duration-200 hover:shadow-lg hover:shadow-green-500/20"
-                >
-                  <span>View on Etherscan</span>
-                  <span className="text-xs">↗</span>
-                </a>
-              </div>
+                <div className="w-full space-y-3">
+                    <a
+                        href={`https://sepolia.etherscan.io/tx/${successTx.txHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 w-full px-4 py-4 rounded-xl bg-brand-primary hover:bg-brand-secondary text-white font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                    >
+                        Посмотреть в Etherscan <ExternalLink size={18} />
+                    </a>
+                    <button onClick={handleClose} className="w-full py-4 text-slate-500 hover:text-slate-800 font-medium transition-colors">
+                        Вернуться к проекту
+                    </button>
+                </div>
             </div>
           )}
 
-          {/* Main Content */}
+          {/* Form Content */}
           {!successTx && (
-            <div className="p-6 space-y-6">
-              {/* Project Title */}
-              <div>
-                <p className="text-xs uppercase tracking-wide text-slate-400 mb-2">
-                  Project
-                </p>
-                <p className="text-white font-semibold line-clamp-2">
-                  {projectTitle}
-                </p>
+            <div className="p-6">
+              
+              <div className="mb-6 pb-6 border-b border-slate-100 space-y-5">
+                  <div className="flex gap-4 items-start bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                      <div className="p-2.5 bg-white rounded-xl shadow-sm border border-slate-100 shrink-0">
+                          <Info size={20} className="text-brand-secondary" />
+                      </div>
+                      <div>
+                          <p className="text-slate-800 font-bold text-sm mb-1 line-clamp-2 leading-tight">
+                              {projectTitle}
+                          </p>
+                          <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium">
+                              <span>Получатель:</span>
+                              <span className="font-mono bg-slate-200/50 px-1.5 py-0.5 rounded text-slate-600">{shortAddress}</span>
+                          </div>
+                      </div>
+                  </div>
               </div>
 
-              {/* Recipient Address */}
-              <div>
-                <p className="text-xs uppercase tracking-wide text-slate-400 mb-2">
-                  Recipient Wallet
-                </p>
-                <div className="flex items-center justify-between bg-slate-800/50 p-3 rounded-lg">
-                  <span className="text-slate-200 font-mono text-sm">
-                    {shortAddress}
-                  </span>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(recipientAddress);
-                    }}
-                    className="text-slate-400 hover:text-slate-200 transition-colors text-xs"
-                  >
-                    Copy
-                  </button>
+              {/* Enter Amount */}
+              <div className="mb-8">
+                <div className="flex justify-between items-end mb-4">
+                    <label className="text-slate-700 font-bold">Сумма (Hearts)</label>
+                    <div className="text-brand-primary font-black text-xl flex items-center gap-1.5">
+                        {ethAmount.toFixed(4)} <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">ETH</span>
+                    </div>
                 </div>
-              </div>
 
-              {/* Heart Selector */}
-              <div>
-                <p className="text-xs uppercase tracking-wide text-slate-400 mb-3">
-                  Donation Amount
-                </p>
-                <div className="flex items-center justify-center gap-4">
+                <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl border border-slate-200 shadow-inner">
                   <button
                     onClick={handleDecreaseHearts}
-                    disabled={isLoading || hearts <= 1}
-                    className="w-10 h-10 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                    className="w-12 h-12 flex items-center justify-center text-slate-600 font-bold text-xl hover:bg-white hover:shadow-sm rounded-xl transition-all disabled:opacity-30"
+                    disabled={hearts <= 1 || isLoading}
                   >
                     −
                   </button>
 
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <span className="text-3xl">❤️</span>
-                      <span className="text-4xl font-bold text-red-400">
-                        {hearts}
-                      </span>
+                  <div className="flex-1 flex flex-col items-center justify-center relative">
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                        <Heart size={20} className={hearts > 0 ? "fill-brand-accent text-brand-accent" : "text-slate-300"} />
+                        <input
+                            type="number"
+                            value={hearts}
+                            readOnly
+                            className="bg-transparent text-center text-2xl font-black text-slate-800 w-20 focus:outline-none pointer-events-none"
+                        />
                     </div>
-                    <p className="text-xs text-slate-400 mt-1">
-                      {hearts} heart{hearts !== 1 ? "s" : ""}
-                    </p>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Hearts</span>
                   </div>
 
                   <button
                     onClick={handleIncreaseHearts}
-                    disabled={isLoading || hearts >= 1000}
-                    className="w-10 h-10 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                    className="w-12 h-12 flex items-center justify-center text-slate-600 font-bold text-xl hover:bg-white hover:shadow-sm rounded-xl transition-all disabled:opacity-30"
+                    disabled={hearts >= 1000 || isLoading}
                   >
                     +
                   </button>
                 </div>
               </div>
 
-              {/* ETH Preview */}
-              <div className="bg-linear-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-xl p-4 text-center">
-                <p className="text-xs uppercase tracking-wide text-slate-400 mb-2">
-                  ETH Amount
-                </p>
-                <p className="text-2xl font-bold text-white">
-                  {ethAmount.toFixed(4)} ETH
-                </p>
-                <p className="text-xs text-slate-400 mt-1">
-                  1 ❤️ = 0.0001 ETH
-                </p>
-              </div>
-
               {/* Error Message */}
               {error && (
-                <div className="bg-red-900/20 border border-red-600 text-red-400 text-sm p-3 rounded-lg">
-                  {error}
+                <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-2xl border border-red-100 text-sm font-medium flex items-start gap-3">
+                  <span className="text-red-500">⚠</span>
+                  <span className="leading-snug">{error}</span>
                 </div>
               )}
 
-              {/* Action Buttons */}
-              <div className="flex gap-3 pt-2">
-                <button
-                  onClick={handleClose}
-                  disabled={isLoading}
-                  className="flex-1 py-2 px-4 rounded-xl font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSendDonation}
-                  disabled={isLoading || !recipientAddress}
-                  className={`flex-1 py-2 px-4 rounded-xl font-medium text-white transition-all active:scale-95 ${
-                    isLoading || !recipientAddress
-                      ? "bg-slate-700 cursor-not-allowed opacity-50"
-                      : "bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40"
-                  }`}
-                >
+              {/* Action Button */}
+              <button
+                onClick={handleSendDonation}
+                disabled={isLoading}
+                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl text-white font-bold text-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 relative overflow-hidden group disabled:opacity-80 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                style={{ backgroundColor: "var(--color-brand-primary)" }}
+              >
                   {isLoading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Sending...
-                    </span>
+                    <>
+                        <Activity className="animate-spin text-white/80" />
+                        <span>Подтвердите в MetaMask...</span>
+                    </>
                   ) : (
-                    `Send ${ethAmount.toFixed(4)} ETH`
+                    <>
+                        <Lock size={18} className="text-white/70" />
+                        <span>Отправить {ethAmount.toFixed(4)} ETH</span>
+                    </>
                   )}
-                </button>
-              </div>
+                  {/* Hover effect gradient */}
+                  <div className="absolute inset-0 h-full w-full bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+              </button>
+
             </div>
           )}
         </div>

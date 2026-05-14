@@ -1,57 +1,62 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { HandCoins, User, LogOut } from "lucide-react";
 
 const UserNavbar = () => {
   const { logout } = useAuth();
 
   return (
-      <header className="bg-slate-900 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto px-6 py-4 grid grid-cols-3 items-center">
+      <header className="w-full">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
           {/* LEFT */}
-          <div>
-            <h2 className="text-2xl font-bold text-white tracking-wide">
-              User Panel
-            </h2>
-          </div>
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="bg-brand-primary p-2 rounded-xl text-white group-hover:bg-brand-secondary transition-colors">
+              <HandCoins size={24} />
+            </div>
+            <span className="text-xl font-bold text-brand-primary tracking-wide hidden sm:block">
+              Сохрани
+            </span>
+          </Link>
 
           {/* CENTER NAV */}
-          <nav className="flex justify-center items-center gap-6">
+          <nav className="flex justify-center items-center gap-6 md:gap-8 font-medium">
 
             <Link
                 to="/"
-                className="text-slate-300 hover:text-blue-400 transition-colors duration-200"
+                className="text-slate-600 hover:text-brand-primary transition-colors duration-200"
             >
-              Home
+              Главная
             </Link>
 
             <Link
                 to="/projects"
-                className="text-slate-300 hover:text-blue-400 transition-colors duration-200"
+                className="text-slate-600 hover:text-brand-primary transition-colors duration-200"
             >
-              Projects
-            </Link>
-
-            {/* 🔥 PROFILE BUTTON */}
-            <Link
-                to="/profile"
-                className="relative px-4 py-2 rounded-xl bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white transition-all duration-200 border border-slate-700"
-            >
-              Profile
-
-              {/* маленький индикатор */}
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
+              Проекты
             </Link>
 
           </nav>
 
           {/* RIGHT */}
-          <div className="flex justify-end">
+          <div className="flex justify-end items-center gap-3">
+            {/* 🔥 PROFILE BUTTON */}
+            <Link
+                to="/profile"
+                className="relative flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-slate-700 hover:text-brand-primary transition-all duration-200 border border-brand-beige/50 hover:border-brand-primary/30 shadow-sm"
+            >
+              <User size={18} />
+              <span className="hidden sm:block">Профиль</span>
+              {/* маленький индикатор */}
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-accent rounded-full border border-white"></span>
+            </Link>
+
             <button
                 onClick={logout}
-                className="bg-red-600 hover:bg-red-700 transition-colors duration-200 px-4 py-2 rounded-xl text-white font-medium shadow-lg shadow-red-600/20"
+                title="Выйти"
+                className="p-2.5 text-slate-500 hover:text-red-500 hover:bg-red-50 transition-colors duration-200 rounded-xl"
             >
-              Logout
+              <LogOut size={20} />
             </button>
           </div>
 

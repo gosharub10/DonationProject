@@ -8,6 +8,7 @@ using Thesis.Domain.Interfaces;
 using Thesis.Infrastructure.Data;
 using Thesis.Infrastructure.Data.Repositories;
 using Thesis.Infrastructure.Services;
+using Thesis.Infrastructure.Settings;
 
 namespace Thesis.Infrastructure;
 
@@ -31,6 +32,10 @@ public static class ConfigurationExtension
         services.AddScoped<IImageService, MinioImageService>();
         services.AddTransient<IPasswordHasher, PasswordHasher>();
         services.AddTransient<ITokenService, TokenService>();
+        services.AddScoped<IEmailService, SmtpEmailService>();
+        
+        // Email configuration
+        services.Configure<EmailSettings>(configuration.GetSection("Email"));
         
         services.AddSingleton<IBlockchainTransactionService, BlockchainTransactionService>();
         // Background service for payment status monitoring
