@@ -114,8 +114,7 @@ const UsersPage = () => {
                                                     ? "bg-brand-primary/10 text-brand-primary border border-brand-primary/20" 
                                                     : "bg-slate-100 text-slate-600 border border-slate-200"
                                             }`}>
-                                                {u.role === "Admin" && <Shield size={12} />}
-                                                {u.role === "Admin" ? "Администратор" : "Пользователь"}
+                                                {u.role === "Admin" && <Shield size={12} />} ? {u.role === "Admin" ? "Администратор" : "Пользователь"} : {u.role === "FinanceManager" ? "Финансист" : "Пользвоатель"}
                                             </span>
                                         </td>
                                         <td className="p-4 text-slate-500 font-medium text-sm">

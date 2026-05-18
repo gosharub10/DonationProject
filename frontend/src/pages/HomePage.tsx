@@ -13,7 +13,7 @@ const HomePage = () => {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-accent"></span>
                     </span>
-                    Web3 Краудфандинг
+                    Web3
                 </div>
 
                 <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-4xl mb-6">
